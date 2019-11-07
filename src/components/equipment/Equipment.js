@@ -29,7 +29,7 @@ class Equipment extends Component {
         }) : <Spinner />
 
         return (
-            <div>
+            <div className="main-content">
                 <Headline preTitle='All your shiny' title='Equipment'>
                     <div className="col-2 text-right">
                         <button className="btn btn-primary d-none d-md-inline-block btn-rounded-circle" onClick={this.handleOpenModal}>+</button>

@@ -4,7 +4,7 @@ import Headline from "../layout/Headline";
 class Dashboard extends Component {
     render() {
         return (
-            <div>
+            <div className="main-content">
                 <Headline preTitle='Welcome!' title='Dashboard'></Headline>
             </div>
         )
