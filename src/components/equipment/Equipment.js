@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import Headline from "../layout/Headline";
-import 'babel-polyfill';
+import { Redirect } from 'react-router-dom'
+import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { firestoreConnect } from 'react-redux-firebase'
-import { compose } from 'redux'
+import 'babel-polyfill';
+import Headline from "../layout/Headline";
 import Spinner from "../layout/Spinner";
 import EquipmentItem from "./EquipmentItem";
 
@@ -19,6 +20,9 @@ class Equipment extends Component {
     }  
 
     render() {
+        const { auth } = this.props;
+        if (!auth.isLoaded) return false
+        if (!auth.uid) return <Redirect to='/login' />
 
         const equipmentList = this.state.equipment === true ? this.props.equipment.map(item => {
             console.log(this.props.brands)
@@ -62,7 +66,8 @@ class Equipment extends Component {
 const mapStateToProps = (state) => {
     return {
         equipment: state.firestore.ordered.equipment,
-        brands: state.firestore.ordered.brands
+        brands: state.firestore.ordered.brands,
+        auth: state.firebase.auth
     }
 }
 

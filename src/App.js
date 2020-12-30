@@ -1,31 +1,39 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import './assets/css/theme.css'
 import { Route, BrowserRouter } from 'react-router-dom'
 import Navbar from './components/layout/Navbar'
 import Dashboard from './components/dashboard/Dashboard'
 import Sessions from './components/sessions/Sessions'
 import Equipment from './components/equipment/Equipment'
-import Login from './components/auth/Login'
-import Logout from './components/auth/Logout'
+import LogIn from './components/auth/LogIn'
 import Signup from './components/auth/Signup'
+import ForgotPassword from './components/auth/ForgotPassword'
 
 class App extends Component {
   render() {
+    const { auth } = this.props
     return (
       <BrowserRouter>
         <div className="App">
-          {1 === 2 ? <Navbar/> : ''}
+          {auth.isLoaded && auth.uid ? <Navbar/> : ''}
           
           <Route exact path="/" component={Dashboard} />
           <Route path="/sessions" component={Sessions} />
           <Route path="/equipment" component={Equipment} />
-          <Route path="/login" component={Login} />
-          <Route path="/logout" component={Logout} />
+          <Route path="/login" component={LogIn} />
           <Route path="/signup" component={Signup} />
+          <Route path="/forgotpassword" component={ForgotPassword} />
         </div>
       </BrowserRouter>
     );
   }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    auth: state.firebase.auth
+  }
+}
+
+export default connect(mapStateToProps)(App)

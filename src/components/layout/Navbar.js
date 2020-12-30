@@ -1,6 +1,11 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import Avatar from '../../assets/img/avatars/profiles/avatar-1.jpg'
+import { connect } from 'react-redux'
+import 'babel-polyfill';
+import { firestoreConnect } from 'react-redux-firebase'
+import { compose } from 'redux'
+import Avatar from '../auth/Avatar'
+import { logOut } from '../../store/actions/authActions'
 import Logo from '../../assets/img/logo.svg'
 import NavItem from './NavItem'
 
@@ -11,6 +16,12 @@ class Navbar extends Component {
 
     toggleMenu = () => {
         this.setState({ showMenu: !this.state.showMenu })
+    }
+
+    logOut = (e) => {
+        e.preventDefault();
+
+        this.props.logOut()
     }
 
     render() {
@@ -31,16 +42,14 @@ class Navbar extends Component {
 
                             <a href="#!" id="sidebarIcon" className="dropdown-toggle" role="button" data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false">
-                                <div className="avatar avatar-sm avatar-online">
-                                    <img src={Avatar} className="avatar-img rounded-circle" alt="..." />
-                                </div>
+                                <Avatar profile={this.props.profile} size="sm" />
                             </a>
 
                             <div className="dropdown-menu dropdown-menu-right" aria-labelledby="sidebarIcon">
                                 <a href="profile-posts.html" className="dropdown-item">Profile</a>
                                 <a href="settings.html" className="dropdown-item">Settings</a>
                                 <hr className="dropdown-divider" />
-                                <a href="sign-in.html" className="dropdown-item">Logout</a>
+                                <a className="dropdown-item" href="#" onClick={this.logOut}>Logout</a>
                             </div>
 
                         </div>
@@ -49,7 +58,7 @@ class Navbar extends Component {
 
                     <div className={'collapse navbar-collapse u-navlist' + (this.state.showMenu ? ' show' : '')} id="sidebarCollapse">
 
-                        <ul className="navbar-nav">
+                        <ul className="navbar-nav pt-3">
                             <NavItem target="/" title="Dashboard" toggleMenu={this.toggleMenu} />
                             <NavItem target="/sessions" title="Sessions" icon="zap" toggleMenu={this.toggleMenu} />
                             <NavItem target="/equipment" title="Equipment" icon="archive" toggleMenu={this.toggleMenu} />
@@ -59,21 +68,10 @@ class Navbar extends Component {
                                     <span className="fe fe-bell"></span> Notifications
                                 </a>
                             </li>
-                        </ul>
-
-                        <hr className="navbar-divider my-3" />
-
-                        <h6 className="navbar-heading">Övrigt</h6>
-
-                        <ul className="navbar-nav mb-md-4">
                             <li className="nav-item">
-                                <a className="nav-link " href="">
-                                    <i className="fe fe-log-out"></i> Logga ut
-                                </a>
-                            </li>
-                            <li className="nav-item">
-                                <a className="nav-link " href="changelog.html">
-                                    <i className="fe fe-git-branch"></i> Changelog <span className="badge badge-primary ml-auto">v1.3.0</span>
+                                <hr/>
+                                <a className="nav-link" href="#" onClick={this.logOut}>
+                                    <i className="fe fe-log-out"></i> Logout
                                 </a>
                             </li>
                         </ul>
@@ -82,38 +80,31 @@ class Navbar extends Component {
 
                         <div className="navbar-user d-none d-md-flex" id="sidebarUser">
 
-
                             <a href="#sidebarModalActivity" className="navbar-user-link" data-toggle="modal">
                                 <span className="icon">
                                     <i className="fe fe-bell"></i>
                                 </span>
                             </a>
 
-
                             <div className="dropup">
-
 
                                 <a href="#!" id="sidebarIconCopy" className="dropdown-toggle" role="button" data-toggle="dropdown"
                                     aria-haspopup="true" aria-expanded="false">
-                                    <div className="avatar avatar-sm avatar-online">
-                                        <img src={Avatar} className="avatar-img rounded-circle" alt="..." />
-                                    </div>
+                                    <Avatar profile={this.props.profile} />
                                 </a>
-
 
                                 <div className="dropdown-menu" aria-labelledby="sidebarIconCopy">
                                     <a href="profile-posts.html" className="dropdown-item">Profile</a>
                                     <a href="settings.html" className="dropdown-item">Settings</a>
                                     <hr className="dropdown-divider" />
-                                    <a href="sign-in.html" className="dropdown-item">Logout</a>
+                                    <a className="dropdown-item" href="#" onClick={this.logOut}>Logout</a>
                                 </div>
 
                             </div>
 
-
                             <a href="#sidebarModalSearch" className="navbar-user-link" data-toggle="modal">
                                 <span className="icon">
-                                    <i className="fe fe-search"></i>
+                                    <i className="fe fe-settings"></i>
                                 </span>
                             </a>
 
@@ -128,4 +119,22 @@ class Navbar extends Component {
     }
 }
 
-export default Navbar;
+const mapStateToProps = (state) => {
+    return {
+        auth: state.firebase.auth,
+        profile: state.firebase.profile,
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        logOut: () => dispatch(logOut())
+    }
+}
+
+export default compose(
+    connect(mapStateToProps, mapDispatchToProps),
+    firestoreConnect([
+        { collection: 'users' }
+    ])
+)(Navbar)

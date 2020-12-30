@@ -10,7 +10,7 @@ var config = {
     projectId: "pacemakr-24b54",
     storageBucket: "pacemakr-24b54.appspot.com",
     messagingSenderId: "567783069933",
-    appId: "1:567783069933:web:bcb740d715233cbf4a94e4"
+    appId: "1:567783069933:web:bcb740d715233cbf4a94e4",
 };
 firebase.initializeApp(config);
 firebase.firestore();
