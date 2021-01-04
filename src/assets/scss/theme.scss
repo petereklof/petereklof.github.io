@@ -20,5 +20,8 @@
 // Dashkit core
 @import 'dashkit/dashkit';
 
+// Vendors
+@import '../../../node_modules/react-datepicker/dist/react-datepicker.css';
+
 // Custom core
 @import 'user';

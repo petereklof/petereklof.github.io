@@ -1,4 +1,4 @@
-// 
+//
 // user.scss
 // Use this to write your custom SCSS
 //
@@ -23,7 +23,7 @@
             color: $white;
             text-align: center;
         }
-        
+
         &:hover button{
             opacity: 1;
         }
@@ -103,7 +103,7 @@
 
   &.show {
         visibility: visible; /* Show the snackbar */
-        /* Add animation: Take 0.5 seconds to fade in and out the snackbar. 
+        /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
         However, delay the fade out process for 2.5 seconds */
         -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
         animation: fadein 0.5s, fadeout 0.5s 2.5s;
@@ -111,7 +111,7 @@
 
     /* Animations to fade the snackbar in and out */
     @-webkit-keyframes fadein {
-        from {bottom: 0; opacity: 0;} 
+        from {bottom: 0; opacity: 0;}
         to {bottom: 30px; opacity: 1;}
     }
 
@@ -121,7 +121,7 @@
     }
 
     @-webkit-keyframes fadeout {
-        from {bottom: 30px; opacity: 1;} 
+        from {bottom: 30px; opacity: 1;}
         to {bottom: 0; opacity: 0;}
     }
 
@@ -158,4 +158,77 @@
 
 .u-cover {
     background-image: url('../../assets/img/cover.jpg');
+}
+
+.u-show-password {
+  padding: 0;
+  transform: translateY(-1px);
+
+  span {
+    height: calc(100% + 2px);
+  }
+}
+
+.u-modal {
+  overflow-y: scroll;
+}
+
+.u-datepicker {
+  width: 100%
+}
+
+.u-csv-reader {
+  border-style: dashed;
+  height: auto;
+  position: relative;
+  height: 140px;
+  background: url('../../assets/img/icons/upload.svg') center 40% no-repeat;
+
+  input {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    outline: none;
+    opacity: 0;
+  }
+
+  label {
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    font-size: 14px;
+    transform: translateY(calc(-50% + 14px));
+    margin: 0;
+    width: 100%;
+  }
+
+  &:hover {
+    border-color: $blue;
+    opacity: 0.8;
+
+    label {
+      color: $blue;
+    }
+  }
+
+  &.success {
+    border-color: $success;
+    background: url('../../assets/img/icons/thumbs-up.svg') center 40% no-repeat;
+
+    label {
+      color: $success;
+    }
+  }
+
+  &.danger {
+    border-color: $danger;
+    background: url('../../assets/img/icons/thumbs-down.svg') center 40% no-repeat;
+
+    label {
+      color: $danger;
+    }
+  }
 }
