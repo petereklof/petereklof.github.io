@@ -8,7 +8,6 @@ import {
   AvgLapTime,
   BestTime,
   Concistency,
-  MultiplyLaps,
 } from '../Utils/LapTimeCalculations';
 import Headline from '../layout/Headline';
 import MainChart from '../layout/MainChart';
@@ -28,8 +27,6 @@ const SessionDetails = ({ auth, session, profile, track }) => {
     const lapTimes = [];
     const avgLapTimes = [];
     let totalLaps = null;
-    let startTime = null;
-    let endTime = null;
 
     let lastLap = 0;
     let run = 1;
@@ -57,12 +54,6 @@ const SessionDetails = ({ auth, session, profile, track }) => {
       totalLaps = i + 1;
       totTime += lapTimeInSeconds;
       const avgLapTimeInSeconds = AvgLapTime(totTime, totalLaps);
-
-      if ( i === 0 ) {
-        startTime = item.starttime;
-      } else {
-        endTime = item.starttime;
-      }
 
       if (lastLap < itemLap) {
         lastLap = itemLap;

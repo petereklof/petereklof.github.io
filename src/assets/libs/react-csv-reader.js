@@ -1,5 +1,5 @@
 import { FileReaderSync } from 'react-papaparse';
-
+/* eslint-disable */
 module.exports = (function (e) {
   var t = {};
   function r(i) {
