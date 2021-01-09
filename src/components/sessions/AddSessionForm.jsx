@@ -28,14 +28,6 @@ class AddSessionForm extends Component {
     this.handleTrackConfigs = this.handleTrackConfigs.bind(this);
   }
 
-  componentDidUpdate(prevProps) {
-    const { vehicles } = this.props;
-
-    if (prevProps.vehicles !== vehicles) {
-      this.setState({ vehiclesLoaded: true });
-    }
-  }
-
   handleTrackConfigs(e) {
     const { tracks } = this.props;
     const choosenTrack = tracks.find(({ id }) => id === e.target.value);
@@ -53,18 +45,23 @@ class AddSessionForm extends Component {
     document.querySelector('.u-csv-reader').classList.remove('danger');
     document.querySelector('.u-csv-reader').classList.add('success');
     document.querySelector('.u-csv-reader label').innerHTML = 'Your file was uploaded and parsed!';
-    const sessionLaps = data.map((item) => {
+
+    const lapTimeArray = [];
+    data.forEach((item) => {
       if (
         item.laptime === undefined
         || item.laptime === null
         || item.laptime === ''
         || item.laptime.length < 4
-      ) return 'false';
-
-      const lapTime = item.laptime.toLowerCase().replace(/(?![:.])\W/g, '');
-      return lapTime;
+      ) {
+        return false;
+      } else {
+        lapTimeArray.push(item);
+      }
+      return this.setState({ sessionLaps: lapTimeArray });
     });
-    return this.setState({ sessionLaps });
+
+    console.log(lapTimeArray);
   }
 
   handleSubmit(e) {
@@ -85,11 +82,10 @@ class AddSessionForm extends Component {
 
   render() {
     const { user } = this.state;
+    const { vehicles, tracks } = this.props;
 
-    // eslint-disable-next-line react/destructuring-assignment
-    const vehicleOptions = this.state.vehiclesLoaded === true
-      // eslint-disable-next-line react/destructuring-assignment
-      ? this.props.vehicles.map((item) => {
+    const vehicleOptions = vehicles
+      ? vehicles.map((item) => {
         if (item.owner === user) {
           return (
             <option key={item.id} value={item.id}>
@@ -103,15 +99,13 @@ class AddSessionForm extends Component {
       })
       : '';
 
-    const { tracks } = this.props;
     const trackOptions = tracks
-      ? this.props.tracks.map((item) => (
+      ? tracks.map((item) => (
         <option key={item.id} value={item.id}>
           {item.name}
         </option>
       ))
       : '';
-
 
     let trackConfigs = '';
     const { trackConfigOptions } = this.state;
@@ -123,10 +117,8 @@ class AddSessionForm extends Component {
           {item.name}
         </option>
       ));
-    } else {
-      if (document.getElementById('trackConfig')) {
-        document.getElementById('trackConfig').disabled = true;
-      }
+    } else if (!trackConfigOptions && document.getElementById('trackConfig')) {
+      document.getElementById('trackConfig').disabled = true;
     }
 
     return (

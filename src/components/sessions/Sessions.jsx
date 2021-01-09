@@ -16,7 +16,9 @@ class Sessions extends Component {
 
     this.state = {
       showModal: false,
-      sessions: false,
+      sessionsLoaded: false,
+      tracksLoaded: false,
+      vehiclesLoaded: false,
     };
 
     this.handleOpenModal = this.handleOpenModal.bind(this);
@@ -24,13 +26,17 @@ class Sessions extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { sessions, tracks } = this.props;
+    const { sessions, tracks, vehicles } = this.props;
     if (prevProps.sessions !== sessions) {
-      this.setState({ sessions: true });
+      this.setState({ sessionsLoaded: true });
     }
 
     if (prevProps.tracks !== tracks) {
-      this.setState({ tracks: true });
+      this.setState({ tracksLoaded: true });
+    }
+
+    if (prevProps.vehicles !== vehicles) {
+      this.setState({ vehiclesLoaded: true });
     }
   }
 
@@ -42,23 +48,47 @@ class Sessions extends Component {
     this.setState({ showModal: false });
   }
 
-  render({ auth } = this.props) {
+  render() {
+    const {
+      showModal,
+      sessionsLoaded,
+      tracksLoaded,
+      vehiclesLoaded,
+    } = this.state;
+
+    const {
+      auth,
+      sessions,
+      tracks,
+      vehicles,
+    } = this.props;
+
     if (!auth.isLoaded) return false;
     if (!auth.uid) return <Redirect to="/login" />;
 
-    const { showModal } = this.state;
-
-    // eslint-disable-next-line react/destructuring-assignment
-    const sessionList = this.state.sessions === true && this.state.tracks === true ? this.props.sessions.map((item) => {
-      if (item.authorId === auth.uid) {
-        const { tracks } = this.props;
-        const track =tracks.find(({ id }) => id === item.sessionTrack);
-        const trackConfig = track ? track.configurations[item.sessionTrackConfig] : null;
-        const sessionItem = <SessionItem key={item.id} item={item} track={track} trackConfig={trackConfig} />;
-        return sessionItem;
-      }
-      return false;
-    }) : <Spinner />;
+    const sessionList = sessionsLoaded === true
+      && tracksLoaded === true
+      && vehiclesLoaded === true
+      ? sessions.map((item) => {
+        if (item.authorId === auth.uid) {
+          const track = tracks.find(({ id }) => id === item.sessionTrack);
+          const trackConfig = track ? track.configurations[item.sessionTrackConfig] : null;
+          const vehicle = vehicles.find(({ id }) => id === item.sessionVehicle);
+          console.log(item.sessionComment)
+          const sessionItem = (
+            <SessionItem
+              key={item.id}
+              item={item}
+              track={track}
+              trackConfig={trackConfig}
+              vehicle={vehicle}
+              comment={item.sessionComment}
+            />
+          );
+          return sessionItem;
+        }
+        return false;
+      }) : <Spinner />;
 
     return (
       <div className="main-content">
@@ -95,7 +125,7 @@ class Sessions extends Component {
           shouldCloseOnOverlayClick
           ariaHideApp={false}
         >
-          <AddSessionForm user={auth.uid} tracks={this.props.tracks}/>
+          <AddSessionForm user={auth.uid} tracks={tracks} />
         </ReactModal>
       </div>
     );
@@ -105,13 +135,15 @@ class Sessions extends Component {
 const mapStateToProps = (state) => ({
   sessions: state.firestore.ordered.sessions,
   tracks: state.firestore.ordered.tracks,
+  vehicles: state.firestore.ordered.vehicles,
   auth: state.firebase.auth,
 });
 
 export default compose(
   connect(mapStateToProps),
   firestoreConnect([
-    { collection: 'sessions' },
+    { collection: 'sessions', orderBy: ['sessionDate', 'desc'] },
     { collection: 'tracks' },
+    { collection: 'vehicles' },
   ]),
 )(Sessions);

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactModal from 'react-modal';
+import { Link } from 'react-router-dom';
 
 class SessionItem extends Component {
   constructor() {
@@ -22,11 +23,31 @@ class SessionItem extends Component {
   }
 
   render() {
-    const { item, track, trackConfig } = this.props;
-    const { showModal } = this.state;
+    const {
+      item,
+      track,
+      trackConfig,
+      vehicle,
+      comment
+    } = this.props;
 
-    const trackName = track ? track['name'] : 'Unknown track';
-    const trackConfigName = trackConfig ? trackConfig['name'] : '';
+    const { showModal } = this.state;
+    const trackName = track ? track.name : 'Unknown track';
+    const trackConfigName = trackConfig ? (
+      <span className="text-muted">
+        (
+        {trackConfig.name}
+        )
+      </span>
+    ) : '';
+
+    const sessionLapsLength = item.sessionLaps ? `${item.sessionLaps.length} laps` : '';
+    const sessionVehicle = vehicle ? `${vehicle.brand} ${vehicle.model}` : '';
+    const commentString = comment ? (
+        <span className="card-text small text-muted ml-2">
+          Comment: {comment}
+        </span>
+    ) : '';
 
     return (
 
@@ -36,37 +57,45 @@ class SessionItem extends Component {
           <div className="col ml-n2">
 
             <h4 className="mb-1 name">
-              {item.sessionDate} - {trackName}
+              {item.sessionDate}
+              {'\u00A0'}
+              -
+              {'\u00A0'}
+              {trackName}
+              {'\u00A0'}
+              {trackConfigName}
             </h4>
 
             <p className="card-text small text-muted mb-1">
-              Track configuration: {trackConfigName}
+              {sessionVehicle}
             </p>
 
-            <p className="card-text small text-muted">
-
+            <p className="card-text small">
+              {sessionLapsLength}
+              {'\u00A0'}
+              {commentString}
             </p>
 
           </div>
           <div className="col-auto">
-            <a href="#!" className="btn btn-sm btn-white d-none d-md-inline-block">Edit</a>
+            <Link to={`/sessions/${item.id}`} className="btn btn-sm btn-white d-none d-md-inline-block">Details</Link>
           </div>
           <div className="col-auto">
 
             <div className="dropdown">
-              <a href="#" className="dropdown-ellipses dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i className="fe fe-more-vertical"></i>
-              </a>
+              <button type="button" className="btn dropdown-ellipses dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i className="fe fe-more-vertical" />
+              </button>
               <div className="dropdown-menu dropdown-menu-right">
                 <a href="#!" className="dropdown-item">
                   Action
-                            </a>
+                </a>
                 <a href="#!" className="dropdown-item">
                   Another action
-                            </a>
+                </a>
                 <a href="#!" className="dropdown-item">
                   Something else here
-                            </a>
+                </a>
               </div>
             </div>
 
@@ -84,7 +113,7 @@ class SessionItem extends Component {
           ariaHideApp={false}
         >
           fasfsd
-                    </ReactModal>
+        </ReactModal>
       </li>
     );
   }

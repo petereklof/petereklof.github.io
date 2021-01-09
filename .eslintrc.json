@@ -25,6 +25,7 @@
     "parser": "babel-eslint",
     "rules": {
       "react/prop-types": "off",
-      "react/no-did-update-set-state": "off"
+      "react/no-did-update-set-state": "off",
+      "react/jsx-fragments": "off"
     }
 }

@@ -5,6 +5,7 @@ import { Route, BrowserRouter } from 'react-router-dom'
 import Navbar from './components/layout/Navbar'
 import Dashboard from './components/dashboard/Dashboard'
 import Sessions from './components/sessions/Sessions'
+import SessionDetails from './components/sessions/SessionDetails'
 import Vehicles from './components/vehicles/Vehicles'
 import LogIn from './components/auth/LogIn'
 import Signup from './components/auth/Signup'
@@ -19,7 +20,8 @@ class App extends Component {
           {auth.isLoaded && auth.uid ? <Navbar/> : ''}
 
           <Route exact path="/" component={Dashboard} />
-          <Route path="/sessions" component={Sessions} />
+          <Route exact path="/sessions" component={Sessions} />
+          <Route path='/sessions/:id' component={SessionDetails} />
           <Route path="/vehicles" component={Vehicles} />
           <Route path="/login" component={LogIn} />
           <Route path="/signup" component={Signup} />
