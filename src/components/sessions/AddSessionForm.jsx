@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';
-import CSVReader from 'react-csv-reader';
+import CSVReader from '../../assets/libs/react-csv-reader2/dist';
 import createSession from '../../store/actions/sessionActions';
 import CompleteDatePicker from '../Utils/CompleteDatePicker';
 

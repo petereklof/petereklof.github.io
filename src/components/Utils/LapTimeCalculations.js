@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const WithinCalculations = (timeArray, bestTime, within) => {
   const withinArray = [];
 
