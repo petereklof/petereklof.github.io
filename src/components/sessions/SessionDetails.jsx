@@ -8,9 +8,11 @@ import {
   AvgLapTime,
   BestTime,
   Concistency,
+  ToSeconds,
 } from '../Utils/LapTimeCalculations';
 import Headline from '../layout/Headline';
 import MainChart from '../layout/MainChart';
+import RunTable from '../layout/RunTable';
 import Spinner from '../layout/Spinner';
 import QuickStatCard from '../layout/QuickStatCard';
 
@@ -18,18 +20,23 @@ const SessionDetails = ({ auth, session, profile, track }) => {
   // Used to determine if chart should be visible
   const urlParams = new URLSearchParams(window.location.search);
   const showChart = urlParams.get('chart');
+  const overrideFirstName = urlParams.get('firstname');
+  const overrideLastName = urlParams.get('lastname');
 
   if (!auth.isLoaded) return false;
-  if (!auth.uid) return <Redirect to="/login" />;
 
-  if (session) {
-    const chartLaps = [];
+  const chartLaps = [];
+  if (session && chartLaps.length < 1) {
+
     const lapTimes = [];
     const avgLapTimes = [];
+    const runs = []
     let totalLaps = null;
+    let currentTotalTime = null;
 
     let lastLap = 0;
     let run = 1;
+    let runLapArray = [];
     let totTime = 0;
 
     session.sessionLaps.forEach((item, i) => {
@@ -45,19 +52,24 @@ const SessionDetails = ({ auth, session, profile, track }) => {
       const lapTime = item.laptime.toLowerCase().replace(/(?![:.])\W/g, '');
       const rawLap = item.lap.toString();
       const lap = rawLap.toLowerCase().replace(/(?![:.])\W/g, '');
-      const lapTimeArray = lapTime.split(':');
-      const hoursToSeconds = parseInt(lapTimeArray[0], 10) * 3600;
-      const minutesToSeconds = parseInt(lapTimeArray[1], 10) * 60;
-      const seconds = parseFloat(lapTimeArray[2]);
-      const lapTimeInSeconds = hoursToSeconds + minutesToSeconds + seconds;
-      const itemLap = lap;
+      const lapTimeInSeconds = ToSeconds(lapTime);
+      const itemLap = parseInt(lap, 10);
       totalLaps = i + 1;
       totTime += lapTimeInSeconds;
       const avgLapTimeInSeconds = AvgLapTime(totTime, totalLaps);
 
+      runLapArray.push(lapTime);
       if (lastLap < itemLap) {
         lastLap = itemLap;
+        currentTotalTime = parseInt(item.totaltime.split(':')[1].replace(/(?![:.])\W/g, ''), 10);
       } else {
+        const currentRun = []
+        currentRun['isFiveMin'] = parseInt(currentTotalTime, 10) > 4 ? true : false;
+        currentRun['laps'] = runLapArray;
+
+        runs.push(currentRun);
+        currentTotalTime = null;
+        runLapArray = [];
         lastLap = 0;
         run += 1;
       }
@@ -81,7 +93,9 @@ const SessionDetails = ({ auth, session, profile, track }) => {
 
     const lapRecordLabel = BestTime(lapTimes, 1) <= lapRecord ? <span className="badge badge-soft-success ml-2 mt-n2">Lap record</span> : '';
 
-    const sessionHeading = `${profile.firstName} ${profile.lastName} - ${trackName} (${trackConfig})`;
+    const firstName = overrideFirstName ? overrideFirstName : profile.firstName;
+    const lastName = overrideLastName ? overrideLastName : profile.lastName;
+    const sessionHeading = `${firstName} ${lastName} - ${trackName} (${trackConfig})`;
     const mainChart = showChart === 'true' ? <MainChart laps={chartLaps} lapTimes={lapTimes} avgLapTimes={avgLapTimes} /> : '';
 
     return (
@@ -136,7 +150,7 @@ const SessionDetails = ({ auth, session, profile, track }) => {
               <div className="col">
                 <h6 className="text-uppercase text-muted mb-2">Total driving time</h6>
                 <span className="h2 mb-0">
-                  {new Date(totTime  * 1000).toISOString().substr(11, 8)}
+                  {new Date(totTime * 1000).toISOString().substr(11, 8)}
                 </span>
               </div>
               <div className="col-auto">
@@ -148,170 +162,9 @@ const SessionDetails = ({ auth, session, profile, track }) => {
           {/* End Quick stat cards */}
 
           <div className="row">
-            <div className="col-12 col-xl-8">
 
-              <div className="card">
-                <div className="card-header">
-                  <h4 className="card-header-title">Performance</h4>
-                </div>
-                <div className="table-responsive mb-0">
-                  <table className="table table-sm table-nowrap card-table">
-                    <thead>
-                      <tr>
-                        <th>Member</th>
-                        <th>Schedule</th>
-                        <th>Hours Billed</th>
-                        <th>Completion</th>
-                        <th>Effective Rate</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          <span>Dianna Smiley</span>
-                        </td>
-                        <td>
-                          <span className="text-success">●</span>
-                          {' '}
-                          On Schedule
-                        </td>
-                        <td>
-                          271
-                        </td>
-                        <td>
-                          <div className="row align-items-center no-gutters">
-                            <div className="col-auto">
-                              <span className="mr-2">55%</span>
-                            </div>
-                            <div className="col">
-                              <div className="progress progress-sm">
-                                <div className="progress-bar bg-secondary" role="progressbar" style={{ width: '55%' }} aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" />
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          $55.25%
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <span>Ab Hadley</span>
-                        </td>
-                        <td>
-                          <span className="text-warning">●</span>
-                          {' '}
-                          Delayed
-                        </td>
-                        <td>
-                          44
-                        </td>
-                        <td>
-                          <div className="row align-items-center no-gutters">
-                            <div className="col-auto">
-                              <span className="mr-2">25%</span>
-                            </div>
-                            <div className="col">
-                              <div className="progress progress-sm">
-                                <div className="progress-bar bg-secondary" role="progressbar" style={{ width: '25%' }} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" />
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          $122.52%
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <span>Adolfo Hess</span>
-                        </td>
-                        <td>
-                          <span className="text-success">●</span>
-                          {' '}
-                          On Schedule
-                        </td>
-                        <td>
-                          271
-                        </td>
-                        <td>
-                          <div className="row align-items-center no-gutters">
-                            <div className="col-auto">
-                              <span className="mr-2">55%</span>
-                            </div>
-                            <div className="col">
-                              <div className="progress progress-sm">
-                                <div className="progress-bar bg-secondary" role="progressbar" style={{ width: '55%' }} aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" />
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          $55.25%
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <span>Daniela Dewitt</span>
-                        </td>
-                        <td>
-                          <span className="text-warning">●</span>
-                          {' '}
-                          Delayed
-                        </td>
-                        <td>
-                          44
-                        </td>
-                        <td>
-                          <div className="row align-items-center no-gutters">
-                            <div className="col-auto">
-                              <span className="mr-2">25%</span>
-                            </div>
-                            <div className="col">
-                              <div className="progress progress-sm">
-                                <div className="progress-bar bg-secondary" role="progressbar" style={{ width: '25%' }} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" />
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          $122.52%
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <span>Miyah Myles</span>
-                        </td>
-                        <td>
-                          <span className="text-success">●</span>
-                          {' '}
-                          On Schedule
-                        </td>
-                        <td>
-                          271
-                        </td>
-                        <td>
-                          <div className="row align-items-center no-gutters">
-                            <div className="col-auto">
-                              <span className="mr-2">55%</span>
-                            </div>
-                            <div className="col">
-                              <div className="progress progress-sm">
-                                <div className="progress-bar bg-secondary" label="Kuk" role="progressbar" style={{ width: '55%' }} aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" />
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          $55.25%
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+            <RunTable lapTimes={runs} />
 
-            </div>
             <div className="col-12 col-xl-4">
 
               <div className="card">
@@ -419,7 +272,7 @@ const SessionDetails = ({ auth, session, profile, track }) => {
 
                           <h4 className="mb-1">Best 3 laps combined</h4>
                           <p className="card-text small text-muted">
-                            {BestTime(lapTimes, 3)}  {Concistency(BestTime(lapTimes, 3), AvgLapTime(totTime, totalLaps) * 3, true)}
+                            {BestTime(lapTimes, 3)}  (Deviation from avgerage lap: {Concistency(BestTime(lapTimes, 3), AvgLapTime(totTime, totalLaps) * 3, true)})
                           </p>
 
                         </div>
@@ -432,7 +285,7 @@ const SessionDetails = ({ auth, session, profile, track }) => {
 
                           <h4 className="mb-1">Best 5 laps combined</h4>
                           <p className="card-text small text-muted">
-                            {BestTime(lapTimes, 5)} {Concistency(BestTime(lapTimes, 5), AvgLapTime(totTime, totalLaps)*5, true)}
+                            {BestTime(lapTimes, 5)} (Deviation from avgerage lap: {Concistency(BestTime(lapTimes, 5), AvgLapTime(totTime, totalLaps) * 5, true)})
                           </p>
 
                         </div>
@@ -445,34 +298,34 @@ const SessionDetails = ({ auth, session, profile, track }) => {
 
                           <h4 className="mb-1">Best 10 laps combined</h4>
                           <p className="card-text small text-muted">
-                            {BestTime(lapTimes, 10)} {Concistency(BestTime(lapTimes, 10), AvgLapTime(totTime, totalLaps) * 10, true)}
+                            {BestTime(lapTimes, 10)} (Deviation from avgerage lap: {Concistency(BestTime(lapTimes, 10), AvgLapTime(totTime, totalLaps) * 10, true)})
                           </p>
 
                         </div>
                       </div>
                     </div>
 
+                  </div>
+
                 </div>
-
               </div>
-            </div>
 
+            </div>
           </div>
         </div>
-      </div>
       </div >
     );
   }
-return (
-  <div className="main-content">
-    <div className="container-fluid">
-      <div className="row">
-        <div className="col-12">
-          <Spinner />
+  return (
+    <div className="main-content">
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-12">
+            <Spinner />
+          </div>
         </div>
       </div>
     </div>
-  </div>
   );
 };
 
