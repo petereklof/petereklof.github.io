@@ -68,7 +68,7 @@ export const FiveMinuteCalc = (run, runNo) => {
   let fiveMinRuns = []
 
   for (let i = 0; i <= run.length; i++ ) {
-
+    /* eslint-disable */
     run.slice(i, run.length).forEach((lap) => {
       if (runTime <= 300) {
         runLapList.push(lap);

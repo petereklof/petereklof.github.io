@@ -117,7 +117,7 @@ class RunTable extends Component {
         i += 1;
         return (
           <option key={item.runNo} value={currentI}>
-            {item.laps} laps in {totTimeMinutes}:{totTimeSeconds.toFixed(3)} (Run {item.runNo} )
+            {item.laps} laps in {totTimeMinutes}:{totTimeSecondsLeadingZero.toFixed(3)} (Run {item.runNo} )
           </option>
         )
       });
