@@ -3,6 +3,11 @@ import {
   FiveMinuteCalc,
   Concistency,
   ToSeconds,
+  ToMinutesAndSeconds,
+  BestTime,
+  AvgLapTime,
+  IdealRun,
+  WorstTime,
 } from '../Utils/LapTimeCalculations';
 import Spinner from '../layout/Spinner';
 
@@ -122,10 +127,14 @@ class RunTable extends Component {
         )
       });
     } else {
-      return(
+      return (
         <Spinner />
       )
     };
+
+    const lapListInSeconds = bestFiveMinRuns[runToShow].lapList.map((lap) => {
+      return ToSeconds(lap);
+    });
 
     return (
       <div className="col-12 col-xl-8">
@@ -133,10 +142,53 @@ class RunTable extends Component {
         <div className="card">
           <div className="card-header">
             <h4 className="card-header-title">5-minute runs</h4>
-            <select className="form-control form-control-rounded custom-select px-4" id="runPicker" onChange={this.handleChange}>
+            <select className="form-control form-control-rounded custom-select px-4 col-4" id="runPicker" onChange={this.handleChange}>
               {runOptions}
             </select>
           </div>
+
+          <div className="row no-gutters border-top border-bottom" >
+            <div className="col-3 py-4 text-center">
+              <h6 className="text-uppercase text-muted">Laps</h6>
+              <h2 className="mb-0">{bestFiveMinRuns[runToShow].laps}</h2>
+            </div>
+            <div className="col-3 py-4 text-center border-left">
+              <h6 className="text-uppercase text-muted">Time</h6>
+              <h2 className="mb-0">{ToMinutesAndSeconds( bestFiveMinRuns[runToShow].time )}</h2>
+            </div>
+            <div className="col-3 py-4 text-center border-left">
+              <h6 className="text-uppercase text-muted">Best lap</h6>
+              <h2 className="mb-0">{BestTime(lapListInSeconds, 1) }</h2>
+            </div>
+            <div className="col-3 py-4 text-center border-left">
+              <h6 className="text-uppercase text-muted">Avg. lap</h6>
+              <h2 className="mb-0">{AvgLapTime(bestFiveMinRuns[runToShow].time, bestFiveMinRuns[runToShow].laps ).toFixed(3) }</h2>
+            </div>
+            <div className="col-6 py-4 text-center border-left border-top">
+              <h6 className="text-uppercase text-muted">Ideal run - based on best lap</h6>
+              <h2 className="mb-0">{IdealRun(BestTime(lapListInSeconds, 1)).laps} laps in {ToMinutesAndSeconds(IdealRun(BestTime(lapListInSeconds, 1)).run)}</h2>
+            </div>
+            <div className="col-3 py-4 text-center border-left border-top">
+              <h6 className="text-uppercase text-muted">Worst lap</h6>
+              <h2 className="mb-0">{WorstTime(lapListInSeconds)}</h2>
+            </div>
+            <div className="col-3 py-4 text-center border-left border-top">
+              <h6 className="text-uppercase text-muted">Concistency</h6>
+              <div className="row align-items-center no-gutters mx-4">
+                <div className="col-auto">
+                  <p className="card-text small pr-3 text-muted">
+                    {Concistency(BestTime(lapListInSeconds, 1), AvgLapTime(bestFiveMinRuns[runToShow].time, bestFiveMinRuns[runToShow].laps))} %
+                  </p>
+                </div>
+                <div className="col">
+                  <div className="progress progress-sm">
+                    <div className="progress-bar" role="progressbar" style={{ width: '85%' }} aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="table-responsive mb-0">
             <table className="table table-sm table-nowrap card-table">
               <thead>

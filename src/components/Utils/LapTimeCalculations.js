@@ -19,11 +19,18 @@ export const BestTime = (lapTimes, laps) => {
   const orderedLapTimes = [...lapTimes].sort();
 
   const bestTimesCombined = orderedLapTimes.slice(0, (laps)).map(i => {
-    bestTimes += i;
+    bestTimes += parseFloat(i);
     return bestTimes;
   });
-
   return bestTimesCombined[bestTimesCombined.length - 1].toFixed(3);
+};
+
+export const WorstTime = (lapTimes) => {
+  const orderedLapTimes = [...lapTimes].sort();
+
+  const worstLap = orderedLapTimes[orderedLapTimes.length - 1]
+
+  return worstLap;
 };
 
 export const Concistency = (bestTime, avgTime, convert) => {
@@ -58,6 +65,14 @@ export const ToSeconds = (lapTime) => {
   const lapTimeInSeconds = hoursToSeconds + minutesToSeconds + seconds;
 
   return lapTimeInSeconds;
+};
+
+export const ToMinutesAndSeconds = (totTime) => {
+  const totTimeMinutes = Math.floor(totTime / 60);
+  const totTimeSeconds = totTime - totTimeMinutes * 60;
+  const totTimeSecondsLeadingZero = (totTimeSeconds.toString().substring(1, 2) === '.' ? '0' + totTimeSeconds.toFixed(3) : totTimeSeconds.toFixed(3));
+
+  return `${totTimeMinutes}:${totTimeSecondsLeadingZero}`;
 };
 
 export const FiveMinuteCalc = (run, runNo) => {
@@ -96,4 +111,21 @@ export const FiveMinuteCalc = (run, runNo) => {
   });
 
   return fiveMinRuns[0];
+};
+
+export const IdealRun = (lapTime) => {
+  const time = parseFloat(lapTime);
+  let run = 0;
+  let laps = 0;
+  let idealRun = [];
+
+  for (let i = 0; i <= 300; i += time) {
+    laps += 1;
+    run += time;
+  }
+
+  idealRun['laps'] = laps;
+  idealRun['run'] = run;
+
+  return idealRun;
 };
