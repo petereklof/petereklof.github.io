@@ -34,21 +34,24 @@ export const WorstTime = (lapTimes) => {
 };
 
 export const Concistency = (bestTime, avgTime, convert) => {
-  const concistency = parseFloat(bestTime / avgTime * 100)
   let concistencyString = '';
 
   if (convert === true) {
-    if (concistency >= 100) {
-      const convertedConsistency = concistency - 100;
+    if (bestTime > avgTime) {
+      const convertedConsistency = parseFloat((1 - (avgTime / bestTime)) * 100);
       concistencyString = `+${(convertedConsistency.toFixed(1))}`;
     } else {
-      const convertedConsistency = 100 - concistency;
+      const convertedConsistency = 100 - parseFloat(bestTime / avgTime * 100);
       concistencyString = `-${(convertedConsistency.toFixed(1))}`;
     }
     return `${ concistencyString } %`;
 
   } else {
-    return parseFloat(bestTime / avgTime * 100).toFixed(1);
+    if (bestTime > avgTime) {
+      return parseFloat((1 - (avgTime / bestTime)) * 100).toFixed(1);
+    } else {
+      return parseFloat(bestTime / avgTime * 100).toFixed(1);
+    }
   }
 };
 
