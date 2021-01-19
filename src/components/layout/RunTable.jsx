@@ -136,6 +136,7 @@ class RunTable extends Component {
       return ToSeconds(lap);
     });
 
+
     return (
       <div className="col-12 col-xl-8">
 

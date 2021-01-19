@@ -16,7 +16,7 @@ export const AvgLapTime = (totTime, laps) => {
 
 export const BestTime = (lapTimes, laps) => {
   let bestTimes = 0;
-  const orderedLapTimes = [...lapTimes].sort();
+  const orderedLapTimes = [...lapTimes].sort((a, b) => a - b);
 
   const bestTimesCombined = orderedLapTimes.slice(0, (laps)).map(i => {
     bestTimes += parseFloat(i);
@@ -26,9 +26,9 @@ export const BestTime = (lapTimes, laps) => {
 };
 
 export const WorstTime = (lapTimes) => {
-  const orderedLapTimes = [...lapTimes].sort();
+  const descOrderedLapTimes = [...lapTimes].sort((a, b) => b - a);
 
-  const worstLap = orderedLapTimes[orderedLapTimes.length - 1]
+  const worstLap = descOrderedLapTimes[0];
 
   return worstLap;
 };

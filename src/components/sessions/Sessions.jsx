@@ -74,7 +74,6 @@ class Sessions extends Component {
           const track = tracks.find(({ id }) => id === item.sessionTrack);
           const trackConfig = track ? track.configurations[item.sessionTrackConfig] : null;
           const vehicle = vehicles.find(({ id }) => id === item.sessionVehicle);
-          console.log(item.sessionComment)
           const sessionItem = (
             <SessionItem
               key={item.id}

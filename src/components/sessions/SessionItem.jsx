@@ -78,7 +78,7 @@ class SessionItem extends Component {
 
           </div>
           <div className="col-auto">
-            <Link to={`/sessions/${item.id}`} className="btn btn-sm btn-white d-none d-md-inline-block">Details</Link>
+            <Link to={`/sessions/${item.id}`} className="btn btn-sm btn-white">Details</Link>
           </div>
           <div className="col-auto">
 
