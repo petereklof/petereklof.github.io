@@ -10,15 +10,13 @@ export const WithinCalculations = (timeArray, bestTime, within) => {
   return withinArray;
 };
 
-export const AvgLapTime = (totTime, laps) => {
-  return parseFloat(totTime) / (laps);
-};
+export const AvgLapTime = (totTime, laps) => parseFloat(totTime) / (laps);
 
 export const BestTime = (lapTimes, laps) => {
   let bestTimes = 0;
   const orderedLapTimes = [...lapTimes].sort((a, b) => a - b);
 
-  const bestTimesCombined = orderedLapTimes.slice(0, (laps)).map(i => {
+  const bestTimesCombined = orderedLapTimes.slice(0, (laps)).map((i) => {
     bestTimes += parseFloat(i);
     return bestTimes;
   });
@@ -38,30 +36,25 @@ export const Concistency = (bestTime, avgTime, convert) => {
 
   if (convert === true) {
     if (bestTime > avgTime) {
-      const convertedConsistency = parseFloat((1 - (avgTime / bestTime)) * 100);
+      const convertedConsistency = parseFloat(100 - (avgTime * 100) / bestTime);
       concistencyString = `+${(convertedConsistency.toFixed(1))}`;
     } else {
-      const convertedConsistency = 100 - parseFloat(bestTime / avgTime * 100);
+      const convertedConsistency = parseFloat(100 - (bestTime * 100) / avgTime);
       concistencyString = `-${(convertedConsistency.toFixed(1))}`;
     }
-    return `${ concistencyString } %`;
-
-  } else {
-    if (bestTime > avgTime) {
-      return parseFloat((1 - (avgTime / bestTime)) * 100).toFixed(1);
-    } else {
-      return parseFloat(bestTime / avgTime * 100).toFixed(1);
-    }
+    return `${concistencyString} %`;
   }
+  if (bestTime > avgTime) {
+    return parseFloat((1 - (avgTime / bestTime)) * 100).toFixed(1);
+  }
+  return parseFloat((bestTime * 100) / avgTime).toFixed(1);
 };
 
-export const MultiplyLaps = (avgTime, laps) => {
-  return avgTime * laps;
-};
+export const MultiplyLaps = (avgTime, laps) => avgTime * laps;
 
 export const ToSeconds = (lapTime) => {
-  lapTime = lapTime.toString();
-  const lapTimeArray = lapTime.split(':');
+  const lapTimeString = lapTime.toString();
+  const lapTimeArray = lapTimeString.split(':');
   const hoursToSeconds = parseInt(lapTimeArray[0], 10) * 3600;
   const minutesToSeconds = parseInt(lapTimeArray[1], 10) * 60;
   const seconds = parseFloat(lapTimeArray[2]);
@@ -73,7 +66,7 @@ export const ToSeconds = (lapTime) => {
 export const ToMinutesAndSeconds = (totTime) => {
   const totTimeMinutes = Math.floor(totTime / 60);
   const totTimeSeconds = totTime - totTimeMinutes * 60;
-  const totTimeSecondsLeadingZero = (totTimeSeconds.toString().substring(1, 2) === '.' ? '0' + totTimeSeconds.toFixed(3) : totTimeSeconds.toFixed(3));
+  const totTimeSecondsLeadingZero = (totTimeSeconds.toString().substring(1, 2) === '.' ? `0${totTimeSeconds.toFixed(3)}` : totTimeSeconds.toFixed(3));
 
   return `${totTimeMinutes}:${totTimeSecondsLeadingZero}`;
 };
@@ -81,11 +74,11 @@ export const ToMinutesAndSeconds = (totTime) => {
 export const FiveMinuteCalc = (run, runNo) => {
   let runTime = 0;
   let runLaps = 0;
-  let firstLap = 0;
+  const firstLap = 0;
   let runLapList = [];
-  let fiveMinRuns = []
+  const fiveMinRuns = [];
 
-  for (let i = 0; i <= run.length; i++ ) {
+  for (let i = 0; i <= run.length; i += 1) {
     /* eslint-disable */
     run.slice(i, run.length).forEach((lap) => {
       if (runTime <= 300) {

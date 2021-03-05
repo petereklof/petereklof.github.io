@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import ReactModal from 'react-modal';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
-import { deleteSession } from '../../store/actions/sessionActions';
+import { deleteTrack } from '../../store/actions/trackActions';
 
-class SessionItem extends Component {
+class TrackItem extends Component {
   constructor(props) {
     super(props);
 
@@ -17,11 +17,11 @@ class SessionItem extends Component {
     this.handleOpenModal = this.handleOpenModal.bind(this);
     this.handleCloseModal = this.handleCloseModal.bind(this);
     this.handleToggleDropdown = this.handleToggleDropdown.bind(this);
-    this.handleDeleteSession = this.handleDeleteSession.bind(this);
+    this.handleDeleteTrack = this.handleDeleteTrack.bind(this);
   }
 
   handleOpenModal() {
-    this.setState({ showModal: true, showDropdown: false });
+    this.setState({ showModal: true });
   }
 
   handleCloseModal() {
@@ -34,74 +34,49 @@ class SessionItem extends Component {
     this.setState({ showDropdown: !showDropdown });
   }
 
-  handleDeleteSession() {
-    const { deleteSessionConnect, item } = this.props;
+  handleDeleteTrack() {
+    const { deleteTrackConnect, item } = this.props;
     const { id } = item;
-    deleteSessionConnect(id);
+    deleteTrackConnect(id);
   }
 
   render() {
-    const {
-      item,
-      track,
-      trackConfig,
-      vehicle,
-      comment,
-    } = this.props;
-
+    const { item, admin } = this.props;
     const { showModal, showDropdown } = this.state;
-    const trackName = track ? track.name : 'Unknown track';
-    const trackConfigName = trackConfig ? (
-      <span className="text-muted">
-        (
-        {trackConfig}
-        )
-      </span>
-    ) : '';
-
-    const sessionLapsLength = item.sessionLaps ? `${item.sessionLaps.length} laps` : '';
-    const sessionVehicle = vehicle ? `${vehicle.brand} ${vehicle.model}` : '';
-    const commentString = comment ? (
-      <span className="card-text small text-muted ml-2">
-        Comment:
-        {'\u00A0'}
-        {comment}
-      </span>
-    ) : '';
 
     const ddClasses = classNames({
       'dropdown-menu dropdown-menu-right': true,
       show: showDropdown,
     });
 
-    return (
+    const editRemove = admin ? (
+      <div>
+        <button className="dropdown-item" type="button" onClick={ this.handleOpenModal }>Edit track</button>
+        <button className="dropdown-item" type="button" onClick={this.handleDeleteTrack}>Remove track</button>
+      </div>
+    ) : '';
 
+    const icon = admin ? (
+      <i className="fe fe-unlock text-success mr-2" />
+    ) : (
+      <i className="fe fe-lock text-muted mr-2" />
+    );
+
+    return (
       <li className="list-group-item">
         <div className="row align-items-center">
 
           <div className="col ml-n2">
 
             <h4 className="mb-1 name">
-              <Link to={`/sessions/${item.id}`}>
-                {item.sessionDate}
+              <Link to={`/tracks/${item.id}`}>
+                {icon}
                 {'\u00A0'}
-                -
+                {item.name}
                 {'\u00A0'}
-                {trackName}
-                {'\u00A0'}
-                {trackConfigName}
+                {item.model}
               </Link>
             </h4>
-
-            <p className="card-text small text-muted mb-1">
-              {sessionVehicle}
-            </p>
-
-            <p className="card-text small">
-              {sessionLapsLength}
-              {'\u00A0'}
-              {commentString}
-            </p>
 
           </div>
           <div className="col-auto">
@@ -111,9 +86,8 @@ class SessionItem extends Component {
                 <i className="fe fe-more-vertical" />
               </button>
               <div className={ddClasses}>
-                <Link to={`/sessions/${item.id}`} className="dropdown-item">View session</Link>
-                <button className="dropdown-item" type="button" onClick={this.handleOpenModal}>Edit session</button>
-                <button className="dropdown-item" type="button" onClick={this.handleDeleteSession}>Remove session</button>
+                <Link to={`/tracks/${item.id}`} className="dropdown-item">View track</Link>
+                {editRemove}
               </div>
             </div>
 
@@ -138,7 +112,7 @@ class SessionItem extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  deleteSessionConnect: (session) => dispatch(deleteSession(session)),
+  deleteTrackConnect: (track) => dispatch(deleteTrack(track)),
 });
 
-export default connect(null, mapDispatchToProps)(SessionItem);
+export default connect(null, mapDispatchToProps)(TrackItem);

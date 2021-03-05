@@ -10,6 +10,14 @@ const sessionReducer = (state = initState, action) => {
       // eslint-disable-next-line no-console
       console.log('create session error');
       return state;
+    case 'DELETE_SESSION_SUCCESS':
+      // eslint-disable-next-line no-console
+      console.log('delete session success');
+      return state;
+    case 'DELETE_SESSION_ERROR':
+      // eslint-disable-next-line no-console
+      console.log('delete session error');
+      return state;
     default:
       return state;
   }

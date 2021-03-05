@@ -7,15 +7,15 @@ import { firestoreConnect } from 'react-redux-firebase';
 import 'babel-polyfill';
 import Headline from '../layout/Headline';
 import Spinner from '../layout/Spinner';
-import VehicleItem from './VehicleItem';
-import AddVehicleForm from './AddVehicleForm';
+import TrackItem from './TrackItem';
+import AddTrackForm from './AddTrackForm';
 
-class Vehicles extends Component {
+class Tracks extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      vehicles: false,
+      tracks: false,
       showModal: false,
     };
 
@@ -24,10 +24,11 @@ class Vehicles extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { vehicles } = this.props;
+    const { tracks } = this.props;
 
-    if (prevProps.vehicles !== vehicles) {
-      this.setState({ vehicles: true });
+
+    if (prevProps.tracks !== tracks) {
+      this.setState({ tracks: true });
     }
   }
 
@@ -47,20 +48,18 @@ class Vehicles extends Component {
     if (!auth.uid) return <Redirect to="/login" />;
 
     // eslint-disable-next-line react/destructuring-assignment
-    const vehicleList = this.state.vehicles === true
+    const trackList = this.state.tracks === true
       // eslint-disable-next-line react/destructuring-assignment
-      ? this.props.vehicles.map((item) => {
-        if (item.owner === auth.uid) {
-          const vehicleItem = <VehicleItem key={item.id} item={item} />;
-          return vehicleItem;
-        }
-        return false;
+      ? this.props.tracks.map((item) => {
+        const admin = item.owner === auth.uid ? true : false;
+        const trackItem = <TrackItem key={item.id} item={item} admin={admin} />;
+        return trackItem;
       })
       : <Spinner />;
 
     return (
       <div className="main-content">
-        <Headline preTitle="All your shiny" title="Vehicles">
+        <Headline preTitle="Life is better at the" title="Tracks">
           <div className="col-2 text-right">
             <button type="button" className="btn btn-primary d-none d-md-inline-block btn-rounded-circle" onClick={this.handleOpenModal}>+</button>
           </div>
@@ -74,7 +73,7 @@ class Vehicles extends Component {
                 <div className="card-body">
 
                   <ul className="list-group list-group-lg list-group-flush list my--4">
-                    {vehicleList}
+                    {trackList}
                   </ul>
 
                 </div>
@@ -86,7 +85,7 @@ class Vehicles extends Component {
 
         <ReactModal
           isOpen={showModal}
-          contentLabel="Add vehicle"
+          contentLabel="Add track"
           className="modal u-modal"
           overlayClassName="modal-backdrop"
           closeTimeoutMS={300}
@@ -94,7 +93,7 @@ class Vehicles extends Component {
           shouldCloseOnOverlayClick
           ariaHideApp={false}
         >
-          <AddVehicleForm user={auth.uid} />
+          <AddTrackForm user={auth.uid} />
         </ReactModal>
 
       </div>
@@ -103,13 +102,13 @@ class Vehicles extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  vehicles: state.firestore.ordered.vehicles,
+  tracks: state.firestore.ordered.tracks,
   auth: state.firebase.auth,
 });
 
 export default compose(
   connect(mapStateToProps),
   firestoreConnect([
-    { collection: 'vehicles' },
+    { collection: 'tracks' },
   ]),
-)(Vehicles);
+)(Tracks);

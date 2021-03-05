@@ -15,7 +15,9 @@ import RunTable from '../layout/RunTable';
 import Spinner from '../layout/Spinner';
 import QuickStatCard from '../layout/QuickStatCard';
 
-const SessionDetails = ({ auth, session, profile, track }) => {
+const SessionDetails = ({
+  auth, session, profile, track,
+}) => {
   // Used to determine if chart should be visible
   const urlParams = new URLSearchParams(window.location.search);
   const showChart = urlParams.get('chart');
@@ -26,10 +28,9 @@ const SessionDetails = ({ auth, session, profile, track }) => {
 
   const chartLaps = [];
   if (session && chartLaps.length < 1) {
-
     const lapTimes = [];
     const avgLapTimes = [];
-    const runs = []
+    const runs = [];
     let totalLaps = null;
     let currentTotalTime = null;
 
@@ -47,7 +48,6 @@ const SessionDetails = ({ auth, session, profile, track }) => {
         || item.laptime.length < 4
       ) return false;
 
-
       const lapTime = item.laptime.toLowerCase().replace(/(?![:.])\W/g, '');
       const rawLap = item.lap.toString();
       const lap = rawLap.toLowerCase().replace(/(?![:.])\W/g, '');
@@ -62,9 +62,9 @@ const SessionDetails = ({ auth, session, profile, track }) => {
         lastLap = itemLap;
         currentTotalTime = parseInt(item.totaltime.split(':')[1].replace(/(?![:.])\W/g, ''), 10);
       } else {
-        const currentRun = []
-        currentRun['isFiveMin'] = parseInt(currentTotalTime, 10) > 4 ? true : false;
-        currentRun['laps'] = runLapArray;
+        const currentRun = [];
+        currentRun.isFiveMin = parseInt(currentTotalTime, 10) > 4;
+        currentRun.laps = runLapArray;
 
         runs.push(currentRun);
         currentTotalTime = null;
@@ -86,15 +86,25 @@ const SessionDetails = ({ auth, session, profile, track }) => {
     const percentageWithin105 = parseFloat((within105Array.length * 100) / totalLaps).toFixed(1);
     const percentageWithin110 = parseFloat((within110Array.length * 100) / totalLaps).toFixed(1);
 
-    const trackName = track ? track.name : '';
-    const trackConfig = track ? track.configurations[3].name : '';
-    const lapRecord = track ? track.configurations[3].lapRecord : '';
+    let trackName;
+    let trackConfigs;
+    let trackConfig;
+    let trackConfigName;
+    let lapRecord;
+
+    if (track) {
+      trackName = track ? track.name : '';
+      lapRecord = track.configurations[3] !== undefined ? track.configurations[3].lapRecord : '';
+      trackConfigs = track.configurations;
+      trackConfig = trackConfigs.filter(config => config.id === session.sessionTrackConfig);
+      trackConfigName = trackConfig[0] ? trackConfig[0].name : 'Unknown track';
+    }
 
     const lapRecordLabel = BestTime(lapTimes, 1) <= lapRecord ? <span className="badge badge-soft-success ml-2 mt-n2">Lap record</span> : '';
 
-    const firstName = overrideFirstName ? overrideFirstName : profile.firstName;
-    const lastName = overrideLastName ? overrideLastName : profile.lastName;
-    const sessionHeading = `${firstName} ${lastName} - ${trackName} (${trackConfig})`;
+    const firstName = overrideFirstName || profile.firstName;
+    const lastName = overrideLastName || profile.lastName;
+    const sessionHeading = `${firstName} ${lastName} - ${trackName} (${trackConfigName})`;
     const mainChart = showChart === 'true' ? <MainChart laps={chartLaps} lapTimes={lapTimes} avgLapTimes={avgLapTimes} /> : '';
 
     return (
@@ -213,12 +223,14 @@ const SessionDetails = ({ auth, session, profile, track }) => {
                           <div className="row align-items-center no-gutters">
                             <div className="col-auto">
                               <p className="card-text small pr-3 text-muted">
-                                {Concistency(BestTime(lapTimes, 1), AvgLapTime(totTime, totalLaps))} %
+                                {Concistency(BestTime(lapTimes, 1), AvgLapTime(totTime, totalLaps))}
+                                {' '}
+                                %
                               </p>
                             </div>
                             <div className="col">
                               <div className="progress progress-sm">
-                                <div className="progress-bar" role="progressbar" style={{ width: '85%' }} aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" />
+                                <div className="progress-bar" role="progressbar" aria-label="Consistency percentage" style={{ width: '85%' }} aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" />
                               </div>
                             </div>
                           </div>
@@ -233,7 +245,12 @@ const SessionDetails = ({ auth, session, profile, track }) => {
 
                           <h4 className="mb-1">Laps within 102% of best time</h4>
                           <p className="card-text small text-muted">
-                            {within102Array.length} laps ({percentageWithin102} %)
+                            {within102Array.length}
+                            {' '}
+                            laps (
+                            {percentageWithin102}
+                            {' '}
+                            %)
                           </p>
 
                         </div>
@@ -245,7 +262,12 @@ const SessionDetails = ({ auth, session, profile, track }) => {
 
                           <h4 className="mb-1">Laps within 105% of best time</h4>
                           <p className="card-text small text-muted">
-                            {within105Array.length} laps ({percentageWithin105} %)
+                            {within105Array.length}
+                            {' '}
+                            laps (
+                            {percentageWithin105}
+                            {' '}
+                            %)
                           </p>
 
                         </div>
@@ -258,7 +280,12 @@ const SessionDetails = ({ auth, session, profile, track }) => {
 
                           <h4 className="mb-1">Laps within 110% of best time</h4>
                           <p className="card-text small text-muted">
-                            {within110Array.length} laps ({percentageWithin110} %)
+                            {within110Array.length}
+                            {' '}
+                            laps (
+                            {percentageWithin110}
+                            {' '}
+                            %)
                           </p>
 
                         </div>
@@ -271,7 +298,11 @@ const SessionDetails = ({ auth, session, profile, track }) => {
 
                           <h4 className="mb-1">Best 3 laps combined</h4>
                           <p className="card-text small text-muted">
-                            {BestTime(lapTimes, 3)}  (Deviation from avgerage lap: {Concistency(BestTime(lapTimes, 3), AvgLapTime(totTime, totalLaps) * 3, true)})
+                            {BestTime(lapTimes, 3)}
+                            {' '}
+                            (Avg. laptime:
+                            {(BestTime(lapTimes, 3) / 3).toFixed(2)}
+                            )
                           </p>
 
                         </div>
@@ -284,7 +315,11 @@ const SessionDetails = ({ auth, session, profile, track }) => {
 
                           <h4 className="mb-1">Best 5 laps combined</h4>
                           <p className="card-text small text-muted">
-                            {BestTime(lapTimes, 5)} (Deviation from avgerage lap: {Concistency(BestTime(lapTimes, 5), AvgLapTime(totTime, totalLaps) * 5, true)})
+                            {BestTime(lapTimes, 5)}
+                            {' '}
+                            (Avg. laptime:
+                            {(BestTime(lapTimes, 5) / 5).toFixed(2)}
+                            )
                           </p>
 
                         </div>
@@ -297,7 +332,11 @@ const SessionDetails = ({ auth, session, profile, track }) => {
 
                           <h4 className="mb-1">Best 10 laps combined</h4>
                           <p className="card-text small text-muted">
-                            {BestTime(lapTimes, 10)} (Deviation from avgerage lap: {Concistency(BestTime(lapTimes, 10), AvgLapTime(totTime, totalLaps) * 10, true)})
+                            {BestTime(lapTimes, 10)}
+                            {' '}
+                            (Avg. laptime:
+                            {(BestTime(lapTimes, 10) / 10).toFixed(2)}
+                            )
                           </p>
 
                         </div>
@@ -312,7 +351,7 @@ const SessionDetails = ({ auth, session, profile, track }) => {
             </div>
           </div>
         </div>
-      </div >
+      </div>
     );
   }
   return (
@@ -343,14 +382,12 @@ const mapStateToProps = (state, props) => {
 };
 
 export default compose(
-  firestoreConnect(props => {
-    return [
-      { collection: 'sessions' },
-      {
-        collection: 'tracks',
-        doc: 'dl88LtfbtzRrmyGpHkVN',
-      }
-    ]
-  }),
+  firestoreConnect([
+    { collection: 'sessions' },
+    {
+      collection: 'tracks',
+      doc: 'dl88LtfbtzRrmyGpHkVN',
+    },
+  ]),
   connect((mapStateToProps)),
 )(SessionDetails);

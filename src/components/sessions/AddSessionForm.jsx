@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import CSVReader from '../../assets/libs/react-csv-reader';
-import createSession from '../../store/actions/sessionActions';
+import { createSession } from '../../store/actions/sessionActions';
 import CompleteDatePicker from '../Utils/CompleteDatePicker';
 
 class AddSessionForm extends Component {
@@ -55,9 +55,9 @@ class AddSessionForm extends Component {
         || item.laptime.length < 4
       ) {
         return false;
-      } else {
-        lapTimeArray.push(item);
       }
+      lapTimeArray.push(item);
+
       return this.setState({ sessionLaps: lapTimeArray });
     });
   }

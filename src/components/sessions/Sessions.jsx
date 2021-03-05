@@ -70,23 +70,28 @@ class Sessions extends Component {
       && tracksLoaded === true
       && vehiclesLoaded === true
       ? sessions.map((item) => {
-        if (item.authorId === auth.uid) {
-          const track = tracks.find(({ id }) => id === item.sessionTrack);
-          const trackConfig = track ? track.configurations[item.sessionTrackConfig] : null;
-          const vehicle = vehicles.find(({ id }) => id === item.sessionVehicle);
-          const sessionItem = (
-            <SessionItem
-              key={item.id}
-              item={item}
-              track={track}
-              trackConfig={trackConfig}
-              vehicle={vehicle}
-              comment={item.sessionComment}
-            />
-          );
-          return sessionItem;
+        const track = tracks.find(({ id }) => id === item.sessionTrack);
+        const trackConfig = track !== undefined ? track.configurations.filter((config) => {
+          // console.log(config.id);
+          // console.log(item.sessionTrackConfig);
+          return config.id === item.sessionTrackConfig;
+        }) : null;
+        const trackConfigName = trackConfig && trackConfig.length ? trackConfig[0].name : null;
+        if (trackConfig && trackConfig.length) {
+          //console.log(trackConfig[0].name);
         }
-        return false;
+        const vehicle = vehicles.find(({ id }) => id === item.sessionVehicle);
+        const sessionItem = (
+          <SessionItem
+            key={item.id}
+            item={item}
+            track={track}
+            trackConfig={trackConfigName}
+            vehicle={vehicle}
+            comment={item.sessionComment}
+          />
+        );
+        return sessionItem;
       }) : <Spinner />;
 
     return (
@@ -140,9 +145,17 @@ const mapStateToProps = (state) => ({
 
 export default compose(
   connect(mapStateToProps),
-  firestoreConnect([
-    { collection: 'sessions', orderBy: ['sessionDate', 'desc'] },
-    { collection: 'tracks' },
-    { collection: 'vehicles' },
-  ]),
+  firestoreConnect((state) => {
+    if (!state.firebase.auth().currentUser) return []
+    return [
+      {
+        collection: 'sessions',
+        where: ['authorId', '==', state.firebase.auth().currentUser.uid],
+        orderBy: ['sessionDate', 'desc'],
+        limit: 1000
+      },
+      { collection: 'tracks' },
+      { collection: 'vehicles' },
+    ]
+  }),
 )(Sessions);

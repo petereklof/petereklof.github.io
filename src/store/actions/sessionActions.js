@@ -1,4 +1,4 @@
-const createSession = (session) => (dispatch, getState, { getFirebase }) => {
+export const createSession = (session) => (dispatch, getState, { getFirebase }) => {
   const firebase = getFirebase();
   const firestore = firebase.firestore();
 
@@ -18,4 +18,14 @@ const createSession = (session) => (dispatch, getState, { getFirebase }) => {
   });
 };
 
-export default createSession;
+export const deleteSession = (session) => (dispatch, getState, { getFirebase }) => {
+  const firebase = getFirebase();
+  const firestore = firebase.firestore();
+
+  firestore.collection('sessions').doc(session).delete().then(() => {
+    dispatch({ type: 'DELETE_SESSION_SUCCESS' });
+  })
+    .catch((err) => {
+      dispatch({ type: 'DELETE_SESSION_ERROR' }, err);
+    });
+};

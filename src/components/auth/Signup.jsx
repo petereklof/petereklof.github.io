@@ -27,7 +27,8 @@ class SignUp extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    signUp(this.state);
+    const { signUpConnect } = this.props;
+    signUpConnect(this.state);
   }
 
   toggleInput() {
@@ -56,7 +57,7 @@ class SignUp extends Component {
                   <div className="row">
                     <label htmlFor="email" className="col">
                       Email Address
-                      <input type="email" className="form-control" placeholder="name@address.com" id="email" onChange={this.handleChange} />
+                      <input type="email" className="form-control" placeholder="name@address.com" required id="email" onChange={this.handleChange} />
                     </label>
                   </div>
                 </div>
@@ -66,7 +67,7 @@ class SignUp extends Component {
                     <label htmlFor="password" className="col">
                       Password
                       <div className="input-group input-group-merge">
-                        <input type={!showPassword ? 'password' : 'text'} className="form-control form-control-appended" placeholder="Enter your password" id="password" onChange={this.handleChange} />
+                        <input type={!showPassword ? 'password' : 'text'} className="form-control form-control-appended" placeholder="Enter your password" required id="password" onChange={this.handleChange} />
                         <button type="button" className="input-group-append btn u-show-password" onClick={this.toggleInput}>
                           <span className="input-group-text">
                             <i className="fe fe-eye" />
@@ -81,7 +82,7 @@ class SignUp extends Component {
                   <div className="row">
                     <label htmlFor="firstName" className="col">
                       First name
-                      <input type="text" className="form-control" placeholder="Enter your first name" id="firstName" onChange={this.handleChange} />
+                      <input type="text" className="form-control" placeholder="Enter your first name" id="firstName" required onChange={this.handleChange} />
                     </label>
                   </div>
                 </div>
@@ -90,7 +91,7 @@ class SignUp extends Component {
                   <div className="row">
                     <label htmlFor="lastName" className="col">
                       Last name
-                      <input type="text" className="form-control" placeholder="Enter your last name" id="lastName" onChange={this.handleChange} />
+                      <input type="text" className="form-control" placeholder="Enter your last name" id="lastName" required onChange={this.handleChange} />
                     </label>
                   </div>
                 </div>
@@ -99,11 +100,11 @@ class SignUp extends Component {
                   {authMessage ? <div className={`alert alert-${authType}`} role="alert">{authMessage}</div> : ''}
                 </div>
 
-                <button type="button" className="btn btn-lg btn-block btn-primary mb-3">Sign up</button>
+                <button type="submit" className="btn btn-lg btn-block btn-primary mb-3">Sign up</button>
 
                 <p className="text-center">
                   <small className="text-muted text-center">
-                    Don&apos;t have an account?
+                    Already have an account?
                     <Link to="/login">Sign in</Link>
                     .
                   </small>
@@ -130,7 +131,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  signUp: (creds) => dispatch(signUp(creds)),
+  signUpConnect: (creds) => dispatch(signUp(creds)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

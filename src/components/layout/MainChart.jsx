@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Chart, Line } from 'react-chartjs-2';
+import zoom from 'chartjs-plugin-zoom';
 import Spinner from './Spinner';
-import zoom from 'chartjs-plugin-zoom'
 
 class MainChart extends Component {
   componentDidMount() {
@@ -14,7 +14,7 @@ class MainChart extends Component {
     const datasetSettings = {
       fill: false,
       borderWidth: 1,
-      //pointBackgroundColor: '#fff',
+      // pointBackgroundColor: '#fff',
       pointHoverRadius: 5,
       pointHoverBackgroundColor: 'rgba(75,192,192,1)',
       pointHoverBorderColor: 'rgba(220,220,220,1)',
@@ -30,61 +30,60 @@ class MainChart extends Component {
         data: lapTimes,
         borderColor: 'rgba(149,149,149,1)',
         pointBorderColor: 'rgba(255,235,104,1)',
-        ...datasetSettings
+        ...datasetSettings,
       }, {
         label: 'Avg. lap time',
         data: avgLapTimes,
         borderColor: 'rgba(255,235,104,1)',
         pointBorderColor: 'rgba(149,149,149,1)',
         borderDash: [10, 5],
-        ...datasetSettings
-      }]
-    }
+        ...datasetSettings,
+      }],
+    };
 
     const options = {
       maintainAspectRatio: false,
       responsive: true,
       legend: {
-        display: false
+        display: false,
       },
       title: {
-        display: false
+        display: false,
       },
       scales: {
         xAxes: [{
           legend: {
-            display: true
+            display: true,
           },
           gridLines: {
-            display: false
-          }
+            display: false,
+          },
         }],
         yAxes: [{
           scaleOverride: true,
           gridLines: {
-            display: false
-          }
-        }]
+            display: false,
+          },
+        }],
       },
       pan: {
         enabled: true,
-        mode: "x",
+        mode: 'x',
         speed: 900000,
-        threshold: 1
+        threshold: 1,
       },
       zoom: {
         enabled: true,
         drag: false,
-        mode: "x",
+        mode: 'x',
         speed: 9000000,
-        sensitivity: -10
-      }
-    }
+        sensitivity: -10,
+      },
+    };
 
-    const chart = lapTimes ?
-      <Line data={data} options={options} id="overviewChart" className="chart-canvas chartjs-render-monitor" />
-      :
-      <Spinner />;
+    const chart = lapTimes
+      ? <Line data={data} options={options} id="overviewChart" className="chart-canvas chartjs-render-monitor" />
+      : <Spinner />;
 
     return (
       <div className="row">
@@ -104,5 +103,5 @@ class MainChart extends Component {
       </div>
     );
   }
-};
+}
 export default MainChart;
