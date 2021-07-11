@@ -57,15 +57,19 @@ class AddSessionForm extends Component {
         return false;
       }
 
-      item.lap = parseInt(item.lap, 10);
+      let lap = {
+        transponder: item.transponder.replace(/\0/g, ''),
+        lap: parseInt(item.lap.replace(/\0/g, ''), 10),
+        laptime: item.laptime.replace(/\0/g, ''),
+        totaltime: item.totaltime.replace(/\0/g, '').replace(/\0/g, ''),
+        starttime: item.starttime.replace(/\0/g, ''),
+      }
 
-      console.log(item.lap);
-
-      lapTimeArray.push(item);
-
-
-      return this.setState({ sessionLaps: lapTimeArray });
+      lapTimeArray.push(lap);
     });
+
+    console.log(lapTimeArray);
+    return this.setState({ sessionLaps: lapTimeArray });
   }
 
   handleSubmit(e) {
