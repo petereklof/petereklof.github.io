@@ -55,8 +55,6 @@ export const deleteTrackConfig = (trackId, configList) => (dispatch, getState, {
   const firebase = getFirebase();
   const firestore = firebase.firestore();
 
-  console.log(trackId);
-
   firestore.collection('tracks').doc(trackId).update({
     configurations: configList,
   }).then(() => {

@@ -66,20 +66,17 @@ class Sessions extends Component {
     if (!auth.isLoaded) return false;
     if (!auth.uid) return <Redirect to="/login" />;
 
+    const urlParams = new URLSearchParams(window.location.search);
+
     const sessionList = sessionsLoaded === true
       && tracksLoaded === true
       && vehiclesLoaded === true
       ? sessions.map((item) => {
         const track = tracks.find(({ id }) => id === item.sessionTrack);
         const trackConfig = track !== undefined ? track.configurations.filter((config) => {
-          // console.log(config.id);
-          // console.log(item.sessionTrackConfig);
           return config.id === item.sessionTrackConfig;
         }) : null;
         const trackConfigName = trackConfig && trackConfig.length ? trackConfig[0].name : null;
-        if (trackConfig && trackConfig.length) {
-          //console.log(trackConfig[0].name);
-        }
         const vehicle = vehicles.find(({ id }) => id === item.sessionVehicle);
         const sessionItem = (
           <SessionItem
@@ -94,6 +91,23 @@ class Sessions extends Component {
         );
         return sessionItem;
       }) : <Spinner />;
+
+    const getPremium = !urlParams.get('limit') ?
+        <div className="row">
+          <div className="col-12">
+            <div className="card card-inactive py-3">
+              <div className="card-body text-center">
+                <h1>Free version includes 5 sessions</h1>
+                <p className="text-muted">
+                  Register for premium to unlock your full session history!
+                </p>
+                <button className="btn btn-primary" /* onClick={this.handleOpenModal} */>
+                  Get premium!
+                </button>
+              </div>
+            </div>
+          </div>
+        </div> : '';
 
     return (
       <div className="main-content">
@@ -119,7 +133,11 @@ class Sessions extends Component {
 
             </div>
           </div>
+
+          {getPremium}
+
         </div>
+
         <ReactModal
           isOpen={showModal}
           contentLabel="Lägg till personal"
@@ -148,12 +166,16 @@ export default compose(
   connect(mapStateToProps),
   firestoreConnect((state) => {
     if (!state.firebase.auth().currentUser) return []
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const limit = urlParams.get('limit') ? urlParams.get('limit')*1 : 5
+
     return [
       {
         collection: 'sessions',
         where: ['authorId', '==', state.firebase.auth().currentUser.uid],
         orderBy: ['sessionDate', 'desc'],
-        limit: 1000
+        limit: limit,
       },
       { collection: 'tracks' },
       { collection: 'vehicles' },

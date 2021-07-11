@@ -68,7 +68,6 @@ class AddSessionForm extends Component {
       lapTimeArray.push(lap);
     });
 
-    console.log(lapTimeArray);
     return this.setState({ sessionLaps: lapTimeArray });
   }
 

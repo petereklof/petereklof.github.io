@@ -75,7 +75,7 @@ class ConfigurationItem extends Component {
 
               <div className="col-8 py-4 text-center border-left">
                 <h6 className="text-uppercase text-muted">Best 5-min run</h6>
-                <h2 className="h3 mb-0">26 laps in 5:09.123</h2>
+                <h2 className="h3 mb-0">XX laps in X:XX.XXX</h2>
               </div>
 
             </div>
@@ -88,7 +88,7 @@ class ConfigurationItem extends Component {
                     <small>Min. valid laptime</small>
                   </div>
                   <div className="col-auto">
-                    <small className="text-muted">{item.minValid}</small>
+                    <small className="text-muted">{item.lowestValidLaptime}</small>
                   </div>
                 </div>
               </div>
@@ -99,7 +99,7 @@ class ConfigurationItem extends Component {
                     <small>Marshalling time</small>
                   </div>
                   <div className="col-auto">
-                    <small className="text-muted">{item.marshalTime}</small>
+                    <small className="text-muted">{item.marshallingTime}</small>
                   </div>
                 </div>
               </div>

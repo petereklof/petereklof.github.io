@@ -77,9 +77,9 @@ class Navbar extends Component {
 
             <ul className="navbar-nav pt-3">
               <NavItem target="/" title="Dashboard" toggleMenu={this.toggleMenu} />
-              <NavItem target="/sessions" title="Sessions" icon="zap" toggleMenu={this.toggleMenu} />
+              <NavItem target="/sessions" title="Sessions" icon="clock" toggleMenu={this.toggleMenu} />
               <NavItem target="/tracks" title="Tracks" icon="map-pin" toggleMenu={this.toggleMenu} />
-              <NavItem target="/vehicles" title="Vehicles" icon="disc" toggleMenu={this.toggleMenu} />
+              <NavItem target="/vehicles" title="Vehicles" icon="box" toggleMenu={this.toggleMenu} />
 
               <li className="nav-item d-md-none">
                 <a className="nav-link" href="#sidebarModalActivity" data-toggle="modal">

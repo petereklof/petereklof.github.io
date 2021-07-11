@@ -27,8 +27,6 @@ class AddSessionForm extends Component {
     this.handleOnFileLoad = this.handleOnFileLoad.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleTrackConfigs = this.handleTrackConfigs.bind(this);
-
-    console.log(props);
   }
 
   handleTrackConfigs(e) {
