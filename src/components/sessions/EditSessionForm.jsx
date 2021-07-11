@@ -16,16 +16,19 @@ class AddSessionForm extends Component {
   constructor(props) {
     super(props);
 
-    const { user } = this.props;
+    const { user, session } = this.props;
 
     this.state = {
       user,
       vehiclesLoaded: false,
+      date: session.sessionDate,
     };
 
     this.handleOnFileLoad = this.handleOnFileLoad.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleTrackConfigs = this.handleTrackConfigs.bind(this);
+
+    console.log(props);
   }
 
   handleTrackConfigs(e) {
@@ -56,13 +59,7 @@ class AddSessionForm extends Component {
       ) {
         return false;
       }
-
-      item.lap = parseInt(item.lap, 10);
-
-      console.log(item.lap);
-
       lapTimeArray.push(item);
-
 
       return this.setState({ sessionLaps: lapTimeArray });
     });
@@ -85,7 +82,7 @@ class AddSessionForm extends Component {
   }
 
   render() {
-    const { user } = this.state;
+    const { user, date } = this.state;
     const { vehicles, tracks } = this.props;
 
     const vehicleOptions = vehicles
@@ -127,13 +124,13 @@ class AddSessionForm extends Component {
 
     return (
       <form onSubmit={this.handleSubmit}>
-        <h2>Create session</h2>
+        <h2>Edit session</h2>
         <hr />
 
         <div className="form-row">
           <div className="form-group col-12 mx-auto mb-0">
             <h3 className="text-muted h4 py-2">Session info</h3>
-            <CompleteDatePicker />
+            <CompleteDatePicker pickedDate={date} />
             <CSVReader
               cssClass="u-csv-reader form-control mb-3"
               onFileLoaded={this.handleOnFileLoad}

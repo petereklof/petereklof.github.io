@@ -94,10 +94,10 @@ const SessionDetails = ({
 
     if (track) {
       trackName = track ? track.name : '';
-      lapRecord = track.configurations[3] !== undefined ? track.configurations[3].lapRecord : '';
       trackConfigs = track.configurations;
       trackConfig = trackConfigs.filter(config => config.id === session.sessionTrackConfig);
       trackConfigName = trackConfig[0] ? trackConfig[0].name : 'Unknown track';
+      lapRecord = trackConfig[0] !== undefined ? trackConfig[0].lapRecord : '';
     }
 
     const lapRecordLabel = BestTime(lapTimes, 1) <= lapRecord ? <span className="badge badge-soft-success ml-2 mt-n2">Lap record</span> : '';

@@ -83,6 +83,7 @@ class Sessions extends Component {
         const vehicle = vehicles.find(({ id }) => id === item.sessionVehicle);
         const sessionItem = (
           <SessionItem
+            auth={auth}
             key={item.id}
             item={item}
             track={track}

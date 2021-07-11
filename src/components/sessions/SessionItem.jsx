@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import ReactModal from 'react-modal';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
+import EditSessionForm from './EditSessionForm';
 import { deleteSession } from '../../store/actions/sessionActions';
 
 class SessionItem extends Component {
@@ -42,6 +43,7 @@ class SessionItem extends Component {
 
   render() {
     const {
+      auth,
       item,
       track,
       trackConfig,
@@ -130,7 +132,7 @@ class SessionItem extends Component {
           shouldCloseOnOverlayClick
           ariaHideApp={false}
         >
-          fasfsd
+          <EditSessionForm user={auth.uid} session={item} />
         </ReactModal>
       </li>
     );
