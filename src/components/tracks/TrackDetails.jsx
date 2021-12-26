@@ -40,12 +40,12 @@ class TrackDetails extends Component {
     this.setState({ showModal: false });
   }
 
-  handleDeleteTrackConfig(uuid) {
+  handleDeleteTrackConfig(configId) {
     const { trackConfigs } = this.state;
     const { deleteTrackConfigConnect, match } = this.props;
     const { id } = match.params;
 
-    const filteredConfigList = trackConfigs.filter((config) => config.id !== uuid);
+    const filteredConfigList = trackConfigs.filter((config) => config.id !== configId);
 
     deleteTrackConfigConnect(id, filteredConfigList);
   }

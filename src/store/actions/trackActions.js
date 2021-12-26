@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { GenerateUUID } from '../../components/Utils/UuidGenerator';
 
 export const createTrack = (track) => (dispatch, getState, { getFirebase }) => {
   const firebase = getFirebase();
@@ -32,7 +32,7 @@ export const createTrackConfig = (trackConfig, trackId) => (dispatch, getState,
   const firestore = firebase.firestore();
 
   const config = {
-    id: uuidv4(),
+    id: GenerateUUID(),
     name: trackConfig.configName,
     lapRecord: trackConfig.lapRecord,
     fiveMinRecord: {
