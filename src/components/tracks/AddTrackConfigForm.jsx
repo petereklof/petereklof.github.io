@@ -16,7 +16,7 @@ class AddTrackConfigForm extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    const { createTrackConfigConnect } = this.props;
+    const { createTrackConfigConnect, closeModal } = this.props;
     const form = e.target;
     const { pathname } = window.location;
     const trackId = pathname.split('/')[2];
@@ -32,6 +32,7 @@ class AddTrackConfigForm extends Component {
     }, () => {
       createTrackConfigConnect(this.state, trackId);
     });
+    closeModal();
   }
 
   render() {

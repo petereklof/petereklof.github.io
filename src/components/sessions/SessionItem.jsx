@@ -132,7 +132,7 @@ class SessionItem extends Component {
           shouldCloseOnOverlayClick
           ariaHideApp={false}
         >
-          <EditSessionForm user={auth.uid} session={item} trackName={trackName} />
+          <EditSessionForm user={auth.uid} session={item} trackName={trackName} closeModal={this.handleCloseModal} />
         </ReactModal>
       </li>
     );

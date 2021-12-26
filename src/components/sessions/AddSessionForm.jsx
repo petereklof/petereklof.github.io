@@ -45,6 +45,7 @@ class AddSessionForm extends Component {
     document.querySelector('.u-csv-reader').classList.remove('danger');
     document.querySelector('.u-csv-reader').classList.add('success');
     document.querySelector('.u-csv-reader label').innerHTML = 'Your file was uploaded and parsed!';
+    document.querySelector('#submit').disabled = false;
 
     const lapTimeArray = [];
     data.forEach((item) => {
@@ -73,7 +74,7 @@ class AddSessionForm extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    const { createSessionConnect } = this.props;
+    const { createSessionConnect, closeModal } = this.props;
     const form = e.target;
 
     this.setState({
@@ -85,6 +86,8 @@ class AddSessionForm extends Component {
     }, () => {
       createSessionConnect(this.state);
     });
+
+    closeModal();
   }
 
   render() {
@@ -156,7 +159,7 @@ class AddSessionForm extends Component {
             <hr className="mb-4" />
 
             <h3 className="text-muted h4 py-2">The track</h3>
-            <select className="form-control form-control-rounded custom-select px-4 mb-2" id="track" onChange={this.handleTrackConfigs}>
+            <select className="form-control form-control-rounded custom-select px-4 mb-2" id="track" onChange={this.handleTrackConfigs} required>
               <option>Choose track</option>
               {trackOptions}
             </select>
@@ -177,7 +180,7 @@ class AddSessionForm extends Component {
 
         <hr />
 
-        <button type="submit" className="btn btn-primary col-12 mt-4">Save</button>
+        <button type="submit" id="submit" className="btn btn-primary col-12 mt-4" disabled>Save</button>
       </form>
     );
   }

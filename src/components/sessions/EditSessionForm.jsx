@@ -72,7 +72,7 @@ class EditSessionForm extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    const { session, editSessionConnect } = this.props;
+    const { session, editSessionConnect, closeModal } = this.props;
     const { sessionLaps } = this.state;
     const form = e.target;
 
@@ -90,12 +90,14 @@ class EditSessionForm extends Component {
     }, () => {
       editSessionConnect(this.state);
     });
+
+    closeModal();
   }
 
   trackConfigs(track) {
     const { tracks } = this.props;
     const choosenTrack = tracks.find(({ id }) => id === track);
-    const trackConfigOptions = choosenTrack.configurations;
+    const trackConfigOptions = choosenTrack !== undefined ? choosenTrack.configurations : null;
     const defaultConfig = track;
 
     this.setState({ trackConfigOptions, defaultConfig });

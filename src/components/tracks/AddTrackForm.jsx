@@ -15,7 +15,7 @@ class AddTrackForm extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    const { createTrackConnect } = this.props;
+    const { createTrackConnect, closeModal } = this.props;
     const form = e.target;
 
     this.setState({
@@ -23,6 +23,8 @@ class AddTrackForm extends Component {
     }, () => {
       createTrackConnect(this.state);
     });
+
+    closeModal();
   }
 
   render() {

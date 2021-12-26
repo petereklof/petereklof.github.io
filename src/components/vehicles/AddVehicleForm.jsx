@@ -15,7 +15,7 @@ class AddVehicleForm extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    const { createVehicleConnect } = this.props;
+    const { createVehicleConnect, closeModal } = this.props;
     const form = e.target;
 
     this.setState({
@@ -24,6 +24,8 @@ class AddVehicleForm extends Component {
     }, () => {
       createVehicleConnect(this.state);
     });
+
+    closeModal();
   }
 
   render() {

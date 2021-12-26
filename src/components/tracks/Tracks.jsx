@@ -92,7 +92,7 @@ class Tracks extends Component {
           shouldCloseOnOverlayClick
           ariaHideApp={false}
         >
-          <AddTrackForm user={auth.uid} />
+          <AddTrackForm user={auth.uid} closeModal={this.handleCloseModal} />
         </ReactModal>
 
       </div>

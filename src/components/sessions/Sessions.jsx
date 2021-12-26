@@ -149,7 +149,7 @@ class Sessions extends Component {
           shouldCloseOnOverlayClick
           ariaHideApp={false}
         >
-          <AddSessionForm user={auth.uid} tracks={tracks} />
+          <AddSessionForm user={auth.uid} tracks={tracks} closeModal={this.handleCloseModal} />
         </ReactModal>
       </div>
     );

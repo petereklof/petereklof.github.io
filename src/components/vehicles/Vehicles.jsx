@@ -94,7 +94,7 @@ class Vehicles extends Component {
           shouldCloseOnOverlayClick
           ariaHideApp={false}
         >
-          <AddVehicleForm user={auth.uid} />
+          <AddVehicleForm user={auth.uid} closeModal={this.handleCloseModal} />
         </ReactModal>
 
       </div>

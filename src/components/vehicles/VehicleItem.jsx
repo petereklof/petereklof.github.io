@@ -90,7 +90,8 @@ class VehicleItem extends Component {
           shouldCloseOnOverlayClick
           ariaHideApp={false}
         >
-          fasfsd
+          {/* To do: Add form */}
+          Coming soon
         </ReactModal>
       </li>
     );

@@ -126,7 +126,7 @@ class TrackDetails extends Component {
             shouldCloseOnOverlayClick
             ariaHideApp={false}
           >
-            <AddTrackConfigForm user={auth.uid} />
+            <AddTrackConfigForm user={auth.uid} closeModal={this.handleCloseModal} />
           </ReactModal>
         </div>
       );
