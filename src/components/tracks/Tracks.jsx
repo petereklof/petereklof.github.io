@@ -26,7 +26,6 @@ class Tracks extends Component {
   componentDidUpdate(prevProps) {
     const { tracks } = this.props;
 
-
     if (prevProps.tracks !== tracks) {
       this.setState({ tracks: true });
     }
@@ -51,7 +50,7 @@ class Tracks extends Component {
     const trackList = this.state.tracks === true
       // eslint-disable-next-line react/destructuring-assignment
       ? this.props.tracks.map((item) => {
-        const admin = item.owner === auth.uid ? true : false;
+        const admin = item.owner === auth.uid;
         const trackItem = <TrackItem key={item.id} item={item} admin={admin} />;
         return trackItem;
       })

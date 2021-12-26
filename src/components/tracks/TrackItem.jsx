@@ -51,7 +51,7 @@ class TrackItem extends Component {
 
     const editRemove = admin ? (
       <div>
-        <button className="dropdown-item" type="button" onClick={ this.handleOpenModal }>Edit track</button>
+        <button className="dropdown-item" type="button" onClick={this.handleOpenModal}>Edit track</button>
         <button className="dropdown-item" type="button" onClick={this.handleDeleteTrack}>Remove track</button>
       </div>
     ) : '';

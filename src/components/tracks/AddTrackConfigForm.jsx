@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import MaskInput from 'react-maskinput';
 import { createTrackConfig } from '../../store/actions/trackActions';
 
-class AddTrackForm extends Component {
+class AddTrackConfigForm extends Component {
   constructor(props) {
     super(props);
 
@@ -18,7 +18,7 @@ class AddTrackForm extends Component {
     e.preventDefault();
     const { createTrackConfigConnect } = this.props;
     const form = e.target;
-    const pathname = window.location.pathname;
+    const { pathname } = window.location;
     const trackId = pathname.split('/')[2];
 
     this.setState({
@@ -59,7 +59,8 @@ class AddTrackForm extends Component {
                   alwaysShowMask
                   maskChar="0"
                   mask="00:00.000"
-                  size={20} />
+                  size={20}
+                />
               </div>
             </div>
 
@@ -71,7 +72,8 @@ class AddTrackForm extends Component {
               alwaysShowMask
               maskChar="0"
               mask="00:00.000"
-              size={20} />
+              size={20}
+            />
 
             <hr className="mb-4" />
             <h3 className="text-muted h4 py-2">Lowest valid laptime</h3>
@@ -81,22 +83,32 @@ class AddTrackForm extends Component {
               alwaysShowMask
               maskChar="0"
               mask="00:00.000"
-              size={20} />
+              size={20}
+            />
             <small className="text-muted">Laptimes lower than this value will be deleted.</small>
 
             <hr className="mb-4" />
-            <h3 className="text-muted h4 py-2">Marshalling time <small>(seconds)</small></h3>
+            <h3 className="text-muted h4 py-2">
+              Marshalling time
+              {'\u00A0'}
+              <small>(seconds)</small>
+            </h3>
             <MaskInput
               id="marshallingTime"
               className="form-control form-control-rounded col py-3 px-4"
               alwaysShowMask
               maskChar="0"
               mask="00:00.000"
-              size={20} />
+              size={20}
+            />
             <small className="text-muted">The duration of an average marshalling on this track configuration.</small>
 
             <hr className="mb-4" />
-            <h3 className="text-muted h4 py-2">Fuck up time <small>(seconds)</small></h3>
+            <h3 className="text-muted h4 py-2">
+              Fuck up time
+              {'\u00A0'}
+              <small>(seconds)</small>
+            </h3>
             <input type="text" id="fuckUpTime" className="form-control form-control-rounded py-3 px-4 mb-4" rows="5" placeholder="Configuration name" />
             <small className="text-muted">Number of seconds above average laptime to be considered a fuck up that needs marshalling.</small>
           </div>
@@ -114,4 +126,4 @@ const mapDispatchToProps = (dispatch) => ({
   createTrackConfigConnect: (trackConfig, trackId) => dispatch(createTrackConfig(trackConfig, trackId)),
 });
 
-export default connect(null, mapDispatchToProps)(AddTrackForm);
+export default connect(null, mapDispatchToProps)(AddTrackConfigForm);

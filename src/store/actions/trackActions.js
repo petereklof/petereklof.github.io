@@ -1,4 +1,4 @@
-import uuidv4 from "uuid/v4";
+import { v4 as uuidv4 } from 'uuid';
 
 export const createTrack = (track) => (dispatch, getState, { getFirebase }) => {
   const firebase = getFirebase();
@@ -26,7 +26,8 @@ export const deleteTrack = (track) => (dispatch, getState, { getFirebase }) => {
     });
 };
 
-export const createTrackConfig = (trackConfig, trackId) => (dispatch, getState, { getFirebase }) => {
+export const createTrackConfig = (trackConfig, trackId) => (dispatch, getState,
+  { getFirebase }) => {
   const firebase = getFirebase();
   const firestore = firebase.firestore();
 
@@ -41,14 +42,16 @@ export const createTrackConfig = (trackConfig, trackId) => (dispatch, getState, 
     lowestValidLaptime: trackConfig.lowestValidLaptime,
     marshallingTime: trackConfig.marshallingTime,
     fuckUpTime: trackConfig.fuckUpTime,
-  }
+  };
+
   firestore.collection('tracks').doc(trackId).update({
-    configurations: firebase.firestore.FieldValue.arrayUnion(config)
+    configurations: firebase.firestore.FieldValue.arrayUnion(config),
   }).then(() => {
     dispatch({ type: 'CREATE_TRACK_SUCCESS' });
-  }).catch((err) => {
-    dispatch({ type: 'CREATE_TRACK_ERROR' }, err);
-  });
+  })
+    .catch((err) => {
+      dispatch({ type: 'CREATE_TRACK_ERROR' }, err);
+    });
 };
 
 export const deleteTrackConfig = (trackId, configList) => (dispatch, getState, { getFirebase }) => {

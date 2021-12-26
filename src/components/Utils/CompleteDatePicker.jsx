@@ -4,8 +4,8 @@ import DatePicker from 'react-datepicker';
 const CompleteDatePicker = (props) => {
   const { pickedDate } = props;
   const [startDate, setStartDate] = useState(new Date());
-
-  let selectedDate = pickedDate !== undefined ? new Date(pickedDate) : startDate;
+  const selectedDate = pickedDate !== undefined ? new Date(pickedDate) : startDate;
+  const displayDate = startDate.toString() === new Date().toString() ? selectedDate : startDate;
 
   return (
     <Fragment>
@@ -13,11 +13,9 @@ const CompleteDatePicker = (props) => {
         id="date"
         className="form-control form-control-rounded px-4 mb-3"
         wrapperClassName="u-datepicker"
-        selected={selectedDate}
-        onSelect={(date) => setStartDate(date)}
+        selected={displayDate}
+        onChange={(date) => setStartDate(date)}
         dateFormat="yyyy-MM-dd"
-        isClearable
-        placeholderText={startDate}
       />
     </Fragment>
   );

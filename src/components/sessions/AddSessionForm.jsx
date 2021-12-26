@@ -57,13 +57,13 @@ class AddSessionForm extends Component {
         return false;
       }
 
-      let lap = {
+      const lap = {
         transponder: item.transponder.replace(/\0/g, ''),
         lap: parseInt(item.lap.replace(/\0/g, ''), 10),
         laptime: item.laptime.replace(/\0/g, ''),
         totaltime: item.totaltime.replace(/\0/g, '').replace(/\0/g, ''),
         starttime: item.starttime.replace(/\0/g, ''),
-      }
+      };
 
       lapTimeArray.push(lap);
     });

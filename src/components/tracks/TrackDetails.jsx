@@ -42,12 +42,10 @@ class TrackDetails extends Component {
 
   handleDeleteTrackConfig(uuid) {
     const { trackConfigs } = this.state;
-    const { deleteTrackConfigConnect } = this.props;
-    const { id } = this.props.match.params;
+    const { deleteTrackConfigConnect, match } = this.props;
+    const { id } = match.params;
 
-    const filteredConfigList = trackConfigs.filter((config) => {
-      return config.id !== uuid;
-    });
+    const filteredConfigList = trackConfigs.filter((config) => config.id !== uuid);
 
     deleteTrackConfigConnect(id, filteredConfigList);
   }
@@ -60,7 +58,7 @@ class TrackDetails extends Component {
     if (!auth.uid) return <Redirect to="/login" />;
 
     if (track) {
-      const isAdmin = auth.uid === track.owner ? true : false;
+      const isAdmin = auth.uid === track.owner;
 
       const addButton = isAdmin ? (
         <div className="col-2 text-right">
@@ -76,7 +74,7 @@ class TrackDetails extends Component {
               <p className="text-muted">
                 Go ahead and create your first!
               </p>
-              <button className="btn btn-primary" onClick={this.handleOpenModal}>
+              <button className="btn btn-primary" type="button" onClick={this.handleOpenModal}>
                 Create configuration
               </button>
             </div>
@@ -93,7 +91,15 @@ class TrackDetails extends Component {
       );
 
       const configurationList = trackConfigs ? trackConfigs.slice(0).reverse().map((item, i) => {
-        const configurationItem = <ConfigurationItem key={i} arrayIndex={i} item={item} admin={isAdmin} deleteConfig={() => this.handleDeleteTrackConfig(item.id)}/>;
+        const configurationItem = (
+          <ConfigurationItem
+            key={item.id}
+            arrayIndex={i}
+            item={item}
+            admin={isAdmin}
+            deleteConfig={() => this.handleDeleteTrackConfig(item.id)}
+          />
+        );
         return configurationItem;
       }) : noConfigs;
 
@@ -138,7 +144,7 @@ class TrackDetails extends Component {
       );
     }
   }
-};
+}
 
 const mapStateToProps = (state, props) => {
   const { id } = props.match.params;
@@ -151,7 +157,8 @@ const mapStateToProps = (state, props) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  deleteTrackConfigConnect: (id, filteredConfigList) => dispatch(deleteTrackConfig(id, filteredConfigList)),
+  deleteTrackConfigConnect:
+    (id, filteredConfigList) => dispatch(deleteTrackConfig(id, filteredConfigList)),
 });
 
 export default compose(

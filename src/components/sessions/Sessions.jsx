@@ -73,9 +73,8 @@ class Sessions extends Component {
       && vehiclesLoaded === true
       ? sessions.map((item) => {
         const track = tracks.find(({ id }) => id === item.sessionTrack);
-        const trackConfig = track !== undefined ? track.configurations.filter((config) => {
-          return config.id === item.sessionTrackConfig;
-        }) : null;
+        const trackConfig = track !== undefined
+          ? track.configurations.filter((config) => config.id === item.sessionTrackConfig) : null;
         const trackConfigName = trackConfig && trackConfig.length ? trackConfig[0].name : null;
         const vehicle = vehicles.find(({ id }) => id === item.sessionVehicle);
         const sessionItem = (
@@ -92,22 +91,24 @@ class Sessions extends Component {
         return sessionItem;
       }) : <Spinner />;
 
-    const getPremium = !urlParams.get('limit') ?
+    const getPremium = !urlParams.get('limit')
+      ? (
         <div className="row">
           <div className="col-12">
             <div className="card card-inactive py-3">
               <div className="card-body text-center">
-                <h1>Free version includes 5 sessions</h1>
+                <h1>Beta version includes 5 sessions</h1>
                 <p className="text-muted">
-                  Register for premium to unlock your full session history!
+                  Soon you will be able to register for premium to unlock your full session history!
                 </p>
-                <button className="btn btn-primary" /* onClick={this.handleOpenModal} */>
+                <button className="btn btn-primary" type="button" onClick={this.handleOpenModal} disabled>
                   Get premium!
                 </button>
               </div>
             </div>
           </div>
-        </div> : '';
+        </div>
+      ) : '';
 
     return (
       <div className="main-content">
@@ -165,20 +166,23 @@ const mapStateToProps = (state) => ({
 export default compose(
   connect(mapStateToProps),
   firestoreConnect((state) => {
-    if (!state.firebase.auth().currentUser) return []
+    if (!state.firebase.auth().currentUser) return [];
 
     const urlParams = new URLSearchParams(window.location.search);
-    const limit = urlParams.get('limit') ? urlParams.get('limit')*1 : 5
+    const limit = urlParams.get('limit') ? urlParams.get('limit') * 1 : 5;
 
     return [
       {
         collection: 'sessions',
         where: ['authorId', '==', state.firebase.auth().currentUser.uid],
         orderBy: ['sessionDate', 'desc'],
-        limit: limit,
+        limit,
       },
       { collection: 'tracks' },
-      { collection: 'vehicles' },
-    ]
+      {
+        collection: 'vehicles',
+        where: ['owner', '==', state.firebase.auth().currentUser.uid],
+      },
+    ];
   }),
 )(Sessions);

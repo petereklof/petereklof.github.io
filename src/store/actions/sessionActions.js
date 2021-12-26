@@ -18,6 +18,28 @@ export const createSession = (session) => (dispatch, getState, { getFirebase }) 
   });
 };
 
+export const editSession = (session) => (dispatch, getState, { getFirebase }) => {
+  const firebase = getFirebase();
+  const firestore = firebase.firestore();
+
+  console.log();
+
+  firestore.collection('sessions').doc(session.sessionId).update({
+    authorId: session.user,
+    createdAt: new Date(),
+    sessionDate: session.sessionDate,
+    sessionComment: session.sessionComment,
+    sessionTrack: session.sessionTrack,
+    sessionTrackConfig: session.sessionTrackConfig,
+    sessionVehicle: session.sessionVehicle,
+    sessionLaps: session.sessionLaps,
+  }).then(() => {
+    dispatch({ type: 'EDIT_SESSION_SUCCESS' });
+  }).catch((err) => {
+    dispatch({ type: 'EDIT_SESSION_ERROR' }, err);
+  });
+};
+
 export const deleteSession = (session) => (dispatch, getState, { getFirebase }) => {
   const firebase = getFirebase();
   const firestore = firebase.firestore();

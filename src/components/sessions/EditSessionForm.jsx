@@ -3,10 +3,10 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import CSVReader from '../../assets/libs/react-csv-reader';
-import { createSession } from '../../store/actions/sessionActions';
+import { editSession } from '../../store/actions/sessionActions';
 import CompleteDatePicker from '../Utils/CompleteDatePicker';
 
-class AddSessionForm extends Component {
+class EditSessionForm extends Component {
   static handleError() {
     document.querySelector('.u-csv-reader').classList.remove('success');
     document.querySelector('.u-csv-reader').classList.add('danger');
@@ -22,24 +22,31 @@ class AddSessionForm extends Component {
       user,
       vehiclesLoaded: false,
       date: session.sessionDate,
+      sessionTrack: session.sessionTrack,
+      sessionTrackConfig: session.sessionTrackConfig,
+      sessionLaps: session.sessionLaps,
+      sessionVehicle: session.sessionVehicle,
     };
 
     this.handleOnFileLoad = this.handleOnFileLoad.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleTrackConfigs = this.handleTrackConfigs.bind(this);
+    this.trackConfigs = this.trackConfigs.bind(this);
+  }
+
+  componentDidMount() {
+    const { sessionTrack } = this.state;
+
+    this.trackConfigs(sessionTrack);
   }
 
   handleTrackConfigs(e) {
-    const { tracks } = this.props;
-    const choosenTrack = tracks.find(({ id }) => id === e.target.value);
-    const trackConfigOptions = choosenTrack.configurations;
-
-    this.setState({ trackConfigOptions });
+    this.trackConfigs(e.target.value);
   }
 
   handleOnFileLoad(data, fileInfo) {
     if (fileInfo.type !== 'text/csv') {
-      AddSessionForm.handleError();
+      EditSessionForm.handleError();
       return false;
     }
 
@@ -65,23 +72,50 @@ class AddSessionForm extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    const { createSessionConnect } = this.props;
+    const { session, editSessionConnect } = this.props;
+    const { sessionLaps } = this.state;
     const form = e.target;
 
+    if (sessionLaps === undefined) {
+      return false;
+    }
+
     this.setState({
+      sessionId: session.id,
       sessionDate: form.querySelector('#date').value,
       sessionComment: form.querySelector('#comment').value,
       sessionTrack: form.querySelector('#track').value,
       sessionTrackConfig: form.querySelector('#trackConfig').value,
       sessionVehicle: form.querySelector('#vehicle').value,
     }, () => {
-      createSessionConnect(this.state);
+      editSessionConnect(this.state);
     });
   }
 
+  trackConfigs(track) {
+    const { tracks } = this.props;
+    const choosenTrack = tracks.find(({ id }) => id === track);
+    const trackConfigOptions = choosenTrack.configurations;
+    const defaultConfig = track;
+
+    this.setState({ trackConfigOptions, defaultConfig });
+  }
+
   render() {
-    const { user, date } = this.state;
-    const { vehicles, tracks } = this.props;
+    const {
+      user,
+      date,
+      sessionTrack,
+      trackConfigOptions,
+      sessionVehicle,
+    } = this.state;
+    const { vehicles, tracks, session } = this.props;
+
+    if (document.getElementById('vehicle')) {
+      if (vehicles.filter(function (e) { return e.id === sessionVehicle; }).length > 0) {
+        document.getElementById('vehicle').value = sessionVehicle;
+      }
+    }
 
     const vehicleOptions = vehicles
       ? vehicles.map((item) => {
@@ -107,17 +141,18 @@ class AddSessionForm extends Component {
       : '';
 
     let trackConfigs = '';
-    const { trackConfigOptions } = this.state;
+    const trackConfigSelect = document.getElementById('trackConfig');
     if (trackConfigOptions) {
-      document.getElementById('trackConfig').disabled = false;
+      trackConfigSelect.disabled = false;
+      trackConfigSelect.value = session.sessionTrackConfig;
 
       trackConfigs = trackConfigOptions.map((item) => (
         <option key={item.id} value={item.id}>
           {item.name}
         </option>
       ));
-    } else if (!trackConfigOptions && document.getElementById('trackConfig')) {
-      document.getElementById('trackConfig').disabled = true;
+    } else if (!trackConfigOptions && trackConfigSelect) {
+      trackConfigSelect.disabled = true;
     }
 
     return (
@@ -132,7 +167,7 @@ class AddSessionForm extends Component {
             <CSVReader
               cssClass="u-csv-reader form-control mb-3"
               onFileLoaded={this.handleOnFileLoad}
-              onError={AddSessionForm.handleError}
+              onError={EditSessionForm.handleError}
               label="Upload a Speedhive export file (.csv)"
               parserOptions={
                 {
@@ -144,11 +179,12 @@ class AddSessionForm extends Component {
               }
               inputId="csv"
             />
-            <textarea id="comment" className="form-control py-3 px-4 mb-4" rows="5" placeholder="Comments about the session..." />
+            <textarea id="comment" className="form-control py-3 px-4 mb-4" rows="5" placeholder="Comments about the session..." defaultValue={session.sessionComment} />
+
             <hr className="mb-4" />
 
             <h3 className="text-muted h4 py-2">The track</h3>
-            <select className="form-control form-control-rounded custom-select px-4 mb-2" id="track" onChange={this.handleTrackConfigs}>
+            <select className="form-control form-control-rounded custom-select px-4 mb-2" id="track" defaultValue={sessionTrack} onChange={this.handleTrackConfigs}>
               <option>Choose track</option>
               {trackOptions}
             </select>
@@ -177,15 +213,27 @@ class AddSessionForm extends Component {
 
 const mapStateToProps = (state) => ({
   vehicles: state.firestore.ordered.vehicles,
+  tracks: state.firestore.ordered.tracks,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  createSessionConnect: (session) => dispatch(createSession(session)),
+  editSessionConnect: (session) => dispatch(editSession(session)),
 });
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect([
-    { collection: 'vehicles' },
-  ]),
-)(AddSessionForm);
+  firestoreConnect((state) => {
+    if (!state.firebase.auth().currentUser) return [];
+
+    return [
+      {
+        collection: 'vehicles',
+        where: ['owner', '==', state.firebase.auth().currentUser.uid],
+        orderBy: ['brand', 'desc'],
+      },
+      {
+        collection: 'tracks',
+      },
+    ];
+  }),
+)(EditSessionForm);
