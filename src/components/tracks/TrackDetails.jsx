@@ -130,19 +130,19 @@ class TrackDetails extends Component {
           </ReactModal>
         </div>
       );
-    } else {
-      return (
-        <div className="main-content">
-          <div className="container-fluid">
-            <div className="row">
-              <div className="col-12">
-                <Spinner />
-              </div>
+    }
+
+    return (
+      <div className="main-content">
+        <div className="container-fluid">
+          <div className="row">
+            <div className="col-12">
+              <Spinner />
             </div>
           </div>
         </div>
-      );
-    }
+      </div>
+    );
   }
 }
 
